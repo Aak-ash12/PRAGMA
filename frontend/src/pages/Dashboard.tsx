@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, ShieldAlert, ShieldCheck, Cpu, Activity, AlertTriangle, Layers } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import Sidebar from '../components/layout/Sidebar';
 import DashboardNavbar from '../components/layout/DashboardNavbar';
 import DashboardFooter from '../components/layout/DashboardFooter';
@@ -15,6 +16,7 @@ import api from '../services/api';
 import { useToast } from '../contexts/ToastContext';
 
 export default function Dashboard() {
+  const navigate = useNavigate();
   const [stats, setStats] = useState({
     active_alerts: 12,
     governance_score: 95.0,
@@ -24,6 +26,14 @@ export default function Dashboard() {
 
   const [activeModal, setActiveModal] = useState<string | null>(null);
   const { addToast } = useToast();
+
+  // Auth guard — redirect to login if not authenticated
+  useEffect(() => {
+    const isAuthenticated = localStorage.getItem('pragma_authenticated');
+    if (isAuthenticated !== 'true') {
+      navigate('/login', { replace: true });
+    }
+  }, [navigate]);
 
   useEffect(() => {
     api.get('/dashboard/stats')

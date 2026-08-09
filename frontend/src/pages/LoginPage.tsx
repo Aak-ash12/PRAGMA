@@ -34,34 +34,65 @@ export default function LoginPage() {
     setIsLoading(true);
     setErrors({});
 
+    const cleanEmail = email.trim().toLowerCase();
+
+    // ── Primary: Client-side credential verification ──
+    // This is the main auth path for the Netlify static deployment.
+    // Credentials are stored in localStorage during registration.
+    const registeredUsers = JSON.parse(localStorage.getItem('pragma_registered_users') || '{}');
+    const userData = registeredUsers[cleanEmail];
+
+    if (userData) {
+      // User exists locally — verify password
+      if (userData.password !== password) {
+        setIsLoading(false);
+        setErrors({ general: 'Incorrect password. Please try again or use Forgot Password to reset it.' });
+        return;
+      }
+
+      // Password is correct — authenticate
+      localStorage.setItem('pragma_authenticated', 'true');
+      localStorage.setItem('pragma_saved_email', cleanEmail);
+      localStorage.setItem('pragma_user_role', userData.role || 'Government Officer');
+      localStorage.setItem('pragma_token', 'auth_' + Date.now());
+      setIsLoading(false);
+      navigate('/dashboard');
+      return;
+    }
+
+    // ── Secondary: Backend API (for local dev with backend running) ──
     try {
       const response = await fetch('/api/v1/auth/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: email.trim(), password })
+        body: JSON.stringify({ email: cleanEmail, password })
       });
 
-      const data = await response.json();
+      const contentType = response.headers.get('content-type');
+      if (contentType && contentType.includes('application/json')) {
+        const data = await response.json();
 
-      if (response.ok) {
-        localStorage.setItem('pragma_authenticated', 'true');
-        localStorage.setItem('pragma_saved_email', data.email || email);
-        localStorage.setItem('pragma_user_role', data.role || 'Government Officer');
-        localStorage.setItem('pragma_token', data.access_token || 'bearer.jwt');
-        setIsLoading(false);
-        navigate('/dashboard');
-      } else {
-        setIsLoading(false);
-        setErrors({ general: data.detail || 'Authentication failed. Please check your credentials.' });
+        if (response.ok) {
+          localStorage.setItem('pragma_authenticated', 'true');
+          localStorage.setItem('pragma_saved_email', data.email || cleanEmail);
+          localStorage.setItem('pragma_user_role', data.role || 'Government Officer');
+          localStorage.setItem('pragma_token', data.access_token || 'bearer.jwt');
+          setIsLoading(false);
+          navigate('/dashboard');
+          return;
+        } else {
+          setIsLoading(false);
+          setErrors({ general: data.detail || 'Incorrect password. Please try again.' });
+          return;
+        }
       }
     } catch (err) {
-      console.error(err);
-      // Fallback for offline client demo authentication
-      localStorage.setItem('pragma_authenticated', 'true');
-      localStorage.setItem('pragma_saved_email', email);
-      setIsLoading(false);
-      navigate('/dashboard');
+      // Backend not available
     }
+
+    // ── No account found anywhere ──
+    setIsLoading(false);
+    setErrors({ general: 'No account found with this email. Please register first.' });
   };
 
   return (

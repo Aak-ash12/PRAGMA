@@ -56,7 +56,7 @@ def send_password_reset_email(to_email: str, reset_token: str, reset_link: str) 
           <p style="font-size:12px; color:#94A3B8;">If you did not request a password reset, please ignore this email.</p>
         </div>
         <div class="footer">
-          Multiagent Predictive Risk Analysis & Governance Management Assistant &copy; 2026
+          Multiagent Predictive Risk Analysis and Governance Management Assistant &copy; 2026
         </div>
       </div>
     </body>

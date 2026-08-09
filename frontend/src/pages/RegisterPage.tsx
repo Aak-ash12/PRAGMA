@@ -41,38 +41,89 @@ export default function RegisterPage() {
     setIsLoading(true);
     setErrors({});
 
+    const cleanEmail = email.trim().toLowerCase();
+
+    // Check if email is already registered (client-side)
+    try {
+      const registeredUsers = JSON.parse(localStorage.getItem('pragma_registered_users') || '{}');
+      if (registeredUsers[cleanEmail]) {
+        setIsLoading(false);
+        setErrors({ general: 'An account with this email already exists. Please sign in instead.' });
+        return;
+      }
+    } catch (e) {
+      // Continue with registration
+    }
+
+    // 1️⃣ Try backend API first
     try {
       const response = await fetch('/api/v1/auth/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          email: email.trim(),
+          email: cleanEmail,
           password,
           name: name.trim(),
           role: 'Government Officer'
         })
       });
 
-      const data = await response.json();
+      const contentType = response.headers.get('content-type');
+      if (contentType && contentType.includes('application/json')) {
+        const data = await response.json();
 
-      if (response.ok) {
-        localStorage.setItem('pragma_authenticated', 'true');
-        localStorage.setItem('pragma_saved_email', data.email || email);
-        localStorage.setItem('pragma_user_role', data.role || 'Government Officer');
-        localStorage.setItem('pragma_token', data.access_token || 'bearer.jwt');
-        setIsLoading(false);
-        navigate('/dashboard');
-      } else {
-        setIsLoading(false);
-        setErrors({ general: data.detail || 'Registration failed. Please try again.' });
+        if (response.ok) {
+          // Store credentials locally for client-side login fallback
+          try {
+            const registeredUsers = JSON.parse(localStorage.getItem('pragma_registered_users') || '{}');
+            registeredUsers[cleanEmail] = {
+              name: name.trim(),
+              password: password,
+              role: 'Government Officer',
+              registeredAt: Date.now()
+            };
+            localStorage.setItem('pragma_registered_users', JSON.stringify(registeredUsers));
+          } catch (e) {
+            console.warn('LocalStorage save error:', e);
+          }
+
+          localStorage.setItem('pragma_authenticated', 'true');
+          localStorage.setItem('pragma_saved_email', data.email || cleanEmail);
+          localStorage.setItem('pragma_user_role', data.role || 'Government Officer');
+          localStorage.setItem('pragma_token', data.access_token || 'bearer.jwt');
+          setIsLoading(false);
+          navigate('/dashboard');
+          return;
+        } else {
+          setIsLoading(false);
+          setErrors({ general: data.detail || 'Registration failed. Please try again.' });
+          return;
+        }
       }
     } catch (err) {
-      console.error(err);
-      // Offline fallback registration
+      console.log('Backend API unavailable, using client-side registration.');
+    }
+
+    // 2️⃣ Client-side registration fallback (for Netlify static deployment)
+    try {
+      const registeredUsers = JSON.parse(localStorage.getItem('pragma_registered_users') || '{}');
+      registeredUsers[cleanEmail] = {
+        name: name.trim(),
+        password: password,
+        role: 'Government Officer',
+        registeredAt: Date.now()
+      };
+      localStorage.setItem('pragma_registered_users', JSON.stringify(registeredUsers));
+
       localStorage.setItem('pragma_authenticated', 'true');
-      localStorage.setItem('pragma_saved_email', email);
+      localStorage.setItem('pragma_saved_email', cleanEmail);
+      localStorage.setItem('pragma_user_role', 'Government Officer');
+      localStorage.setItem('pragma_token', 'client_token_' + Date.now());
       setIsLoading(false);
       navigate('/dashboard');
+    } catch (localErr) {
+      setIsLoading(false);
+      setErrors({ general: 'Registration failed. Please try again.' });
     }
   };
 

@@ -88,28 +88,18 @@ def login(payload: LoginRequest, db: Session = Depends(get_db)):
     # Search user by email or username
     user = db.query(User).filter((User.email == identifier) | (User.username == identifier)).first()
 
-    if user:
-        # Auto-update password hash to ensure any new password typed by user works seamlessly
-        user.hashed_password = hash_password(payload.password)
-        db.commit()
-        db.refresh(user)
-    else:
-        # If user does not exist in local database yet, auto-register them so ANY real email & password works instantly!
-        new_username = identifier.split('@')[0] if '@' in identifier else identifier
-        hashed_pw = hash_password(payload.password)
-        user = User(
-            email=identifier if '@' in identifier else f"{identifier}@pragma.gov",
-            username=new_username,
-            hashed_password=hashed_pw,
-            role="Government Officer"
+    if not user:
+        raise HTTPException(
+            status_code=401,
+            detail="No account found with this email. Please register first."
         )
-        try:
-            db.add(user)
-            db.commit()
-            db.refresh(user)
-        except Exception:
-            db.rollback()
-            user = db.query(User).filter(User.email == identifier).first()
+
+    # Verify password against stored hash
+    if not verify_password(payload.password, user.hashed_password):
+        raise HTTPException(
+            status_code=401,
+            detail="Incorrect password. Please try again or use Forgot Password to reset it."
+        )
 
     token = create_access_token({"sub": str(user.id), "role": user.role or "Government Officer", "email": user.email})
     return LoginResponse(
