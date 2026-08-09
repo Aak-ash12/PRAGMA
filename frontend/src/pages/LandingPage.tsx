@@ -52,7 +52,7 @@ export default function LandingPage() {
             transition={{ duration: 0.6, delay: 0.1 }}
             className="text-4xl md:text-6xl font-poppins font-bold tracking-tight mb-6 max-w-5xl"
           >
-            Multiagent Predictive Risk Analysis & <br/> 
+            Multiagent Predictive Risk Analysis and <br/> 
             <span className="text-gradient">Governance Management Assistant</span> <br/>
             <span className="text-2xl md:text-3xl font-medium text-sky-400 block mt-3">for Smart Cities Using Digital Twin</span>
           </motion.h1>

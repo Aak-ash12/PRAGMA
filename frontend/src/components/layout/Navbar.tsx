@@ -12,7 +12,7 @@ export default function Navbar() {
         >
           <Shield className="w-8 h-8 text-primary" />
         </motion.div>
-        <span className="text-base md:text-lg font-poppins font-bold tracking-tight text-white">Multiagent Predictive Risk & Governance Assistant</span>
+        <span className="text-base md:text-lg font-poppins font-bold tracking-tight text-white">Multiagent Predictive Risk Analysis and Governance Management Assistant for Smart Cities Using Digital Twin</span>
       </div>
       
       <div className="hidden md:flex gap-8 text-sm font-medium text-gray-400">

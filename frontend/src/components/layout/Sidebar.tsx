@@ -32,12 +32,9 @@ export default function Sidebar() {
       <div className="p-6 flex items-center gap-3 border-b border-white/10">
         <Shield className="w-8 h-8 text-primary" />
         <div className="overflow-hidden">
-          <h1 className="text-sm font-poppins font-bold text-white tracking-tight leading-snug">
-            Multiagent Risk & Governance Assistant
+          <h1 className="text-xs font-poppins font-bold text-white tracking-tight leading-tight">
+            Multiagent Predictive Risk Analysis and Governance Management Assistant for Smart Cities Using Digital Twin
           </h1>
-          <p className="text-[9px] text-primary font-mono uppercase tracking-wider leading-tight mt-0.5">
-            Smart Cities Digital Twin
-          </p>
         </div>
       </div>
 
