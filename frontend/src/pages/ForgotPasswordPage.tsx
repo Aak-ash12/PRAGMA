@@ -101,9 +101,6 @@ export default function ForgotPasswordPage() {
       <nav className="absolute top-0 w-full z-50 px-6 py-6 flex justify-between items-center">
         <div className="flex items-center gap-2.5 max-w-xl">
           <Shield className="w-8 h-8 text-primary flex-shrink-0" />
-          <span className="text-sm md:text-base font-poppins font-bold tracking-tight text-white truncate">
-            Multiagent Predictive Risk Analysis & Governance Management Assistant
-          </span>
         </div>
         <Link 
           to="/login" 

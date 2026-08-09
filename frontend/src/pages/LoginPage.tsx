@@ -101,9 +101,6 @@ export default function LoginPage() {
       <nav className="absolute top-0 w-full z-50 px-6 py-6 flex justify-between items-center">
         <div className="flex items-center gap-2.5 max-w-xl">
           <Shield className="w-8 h-8 text-primary flex-shrink-0" />
-          <span className="text-sm md:text-base font-poppins font-bold tracking-tight text-white truncate">
-            Multiagent Predictive Risk Analysis & Governance Management Assistant
-          </span>
         </div>
         <Link 
           to="/home" 
@@ -131,7 +128,7 @@ export default function LoginPage() {
               <Shield className="w-10 h-10 text-primary" />
             </motion.div>
             <h1 className="text-xl md:text-2xl font-poppins font-bold text-white mb-2 text-center leading-snug">
-              Multiagent Governance & Risk Management System
+              Multiagent Predictive Risk Analysis and Governance Management Assistant for Smart Cities Using Digital Twin
             </h1>
             <p className="text-xs text-center text-primary font-mono tracking-widest uppercase font-semibold">
               Enter your email and password to access platform
