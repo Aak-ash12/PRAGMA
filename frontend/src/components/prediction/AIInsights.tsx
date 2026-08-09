@@ -1,0 +1,268 @@
+import { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { BrainCircuit, Lightbulb, CheckCircle2, ChevronRight, Sliders, ShieldCheck, Play, Filter, X, BarChart2 } from 'lucide-react';
+import { useToast } from '../../contexts/ToastContext';
+
+export interface InsightItem {
+  id: number;
+  title: string;
+  benefit: string;
+  cost: string;
+  priority: 'Critical' | 'High' | 'Medium';
+  conf: number;
+  category: string;
+  shapFeatures: { feature: string; weight: string; color: string }[];
+  executed?: boolean;
+}
+
+const defaultInsightsList: InsightItem[] = [
+  { 
+    id: 1, 
+    title: 'Population growth models predict a demand of 167 new housing units, suggesting urgent rezoning requirements.', 
+    benefit: 'Risk mitigation predicted by dynamic CSV data models & census migration trends.',
+    cost: '₹30 Cr',
+    priority: 'High',
+    conf: 95,
+    category: 'Housing & Urbaning',
+    shapFeatures: [
+      { feature: 'Urban Inflow Rate', weight: '48%', color: '#2563EB' },
+      { feature: 'Vacancy Deficit Index', weight: '26%', color: '#7C3AED' },
+      { feature: 'Suburban Zoning Capacity', weight: '16%', color: '#06B6D4' },
+      { feature: 'School District Load', weight: '10%', color: '#10B981' },
+    ]
+  },
+  { 
+    id: 2, 
+    title: 'Epidemiological calculations (SIR) indicate infections could peak in 2 weeks, pushing hospital occupancy to 88%.', 
+    benefit: 'Prevents 15% ICU overflow across regional hospital triage centers.',
+    cost: 'Nil',
+    priority: 'Critical',
+    conf: 93,
+    category: 'Healthcare & Public Safety',
+    shapFeatures: [
+      { feature: 'Viral Transmission R0 (2.4)', weight: '52%', color: '#EF4444' },
+      { feature: 'Hospital Bed Saturation', weight: '24%', color: '#F59E0B' },
+      { feature: 'Vaccine Inventory Stock', weight: '14%', color: '#3B82F6' },
+      { feature: 'Public Mobility Index', weight: '10%', color: '#10B981' },
+    ]
+  },
+  { 
+    id: 3, 
+    title: 'Shortfall warnings triggered for electricity grid: Peak cooling demands exceed reserve threshold by 1,420 MW.', 
+    benefit: 'Saves 2.4 GW for industrial redistribution & prevents blackout cascades.',
+    cost: '₹12 Cr',
+    priority: 'High',
+    conf: 91,
+    category: 'Utilities & Power Grid',
+    shapFeatures: [
+      { feature: 'Ambient Temp Peak (34°C)', weight: '54%', color: '#F59E0B' },
+      { feature: 'Transformer Load Degrade', weight: '22%', color: '#EF4444' },
+      { feature: 'Industrial Consumption Base', weight: '16%', color: '#2563EB' },
+      { feature: 'Frequency Drift Delta', weight: '8%', color: '#10B981' },
+    ]
+  },
+  { 
+    id: 4, 
+    title: 'Accumulated hydrological runoff models project flood risk probability of 85% in coastal sectors.', 
+    benefit: 'Protects 14,000 citizens along Chennai low-lying riverbank zones.',
+    cost: '₹45 Cr',
+    priority: 'Critical',
+    conf: 98,
+    category: 'Disaster Prevention',
+    shapFeatures: [
+      { feature: 'Rainfall Runoff Rate (145mm)', weight: '58%', color: '#EF4444' },
+      { feature: 'River Gauge Elevation (7.8m)', weight: '24%', color: '#3B82F6' },
+      { feature: 'Drainage Outlet Saturation', weight: '12%', color: '#7C3AED' },
+      { feature: 'Tidal Inflow Resistance', weight: '6%', color: '#06B6D4' },
+    ]
+  }
+];
+
+interface Props {
+  data?: string[];
+}
+
+export default function AIInsights({ data }: Props) {
+  const [insights, setInsights] = useState<InsightItem[]>(defaultInsightsList);
+  const [selectedInsight, setSelectedInsight] = useState<InsightItem | null>(null);
+  const [priorityFilter, setPriorityFilter] = useState<string>('All');
+  const [isExecuting, setIsExecuting] = useState<boolean>(false);
+  const { addToast } = useToast();
+
+  const filteredInsights = insights.filter(item => {
+    if (priorityFilter === 'All') return true;
+    return item.priority === priorityFilter;
+  });
+
+  const handleExecuteInsight = (item: InsightItem) => {
+    setIsExecuting(true);
+    setTimeout(() => {
+      setInsights(prev =>
+        prev.map(i => (i.id === item.id ? { ...i, executed: true } : i))
+      );
+      setIsExecuting(false);
+      addToast(`Policy Recommendation Executed: "${item.title.substring(0, 45)}..."`, 'success');
+    }, 1500);
+  };
+
+  return (
+    <div className="glass-card min-h-[420px] flex flex-col relative overflow-hidden group">
+      <div className="flex justify-between items-start mb-4 relative z-10">
+        <div>
+          <div className="flex items-center gap-2">
+            <h3 className="text-white font-poppins font-semibold text-base">Explainable AI Insights (XAI)</h3>
+            <span className="text-[10px] px-2 py-0.5 rounded bg-accentPurple/20 text-accentPurple border border-accentPurple/30 font-bold uppercase">
+              SHAP Vector Models
+            </span>
+          </div>
+          <p className="text-[10px] text-gray-400 uppercase tracking-wider">Generated by PRAGMA Multi-Agent Core Engine</p>
+        </div>
+
+        <div className="flex items-center gap-1 bg-black/40 p-1 rounded-lg border border-white/10 text-[10px]">
+          <Filter className="w-3 h-3 text-accentPurple ml-1" />
+          {['All', 'Critical', 'High'].map(p => (
+            <button
+              key={p}
+              onClick={() => setPriorityFilter(p)}
+              className={`px-2 py-0.5 rounded transition-all font-bold ${
+                priorityFilter === p ? 'bg-accentPurple text-white shadow-sm' : 'text-gray-400 hover:text-white'
+              }`}
+            >
+              {p}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* Insights List */}
+      <div className="flex-1 overflow-y-auto custom-scrollbar pr-1 space-y-3 relative z-10">
+        {filteredInsights.map((insight, i) => {
+          const isSelected = selectedInsight?.id === insight.id;
+
+          return (
+            <motion.div
+              key={insight.id}
+              initial={{ opacity: 0, x: 15 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: i * 0.08 }}
+              onClick={() => setSelectedInsight(insight)}
+              className={`p-3.5 rounded-xl border transition-all cursor-pointer ${
+                isSelected
+                  ? 'bg-accentPurple/20 border-accentPurple shadow-[0_0_15px_rgba(124,58,237,0.3)]'
+                  : 'bg-white/5 border-white/10 hover:bg-white/10 hover:border-accentPurple/40'
+              }`}
+            >
+              <div className="flex justify-between items-start gap-2 mb-1.5">
+                <div className="flex items-start gap-2">
+                  <Lightbulb className="w-4 h-4 text-accentPurple flex-shrink-0 mt-0.5" />
+                  <h4 className="text-xs font-semibold text-white leading-snug">{insight.title}</h4>
+                </div>
+                {insight.executed && (
+                  <span className="text-[9px] px-1.5 py-0.5 rounded bg-success/20 text-success border border-success/30 font-bold flex items-center gap-1 flex-shrink-0">
+                    <CheckCircle2 className="w-3 h-3" /> Executed
+                  </span>
+                )}
+              </div>
+
+              <div className="pl-6 mb-2 text-[10px] text-gray-300">
+                <span className="text-accentPurple font-bold">Benefit:</span> {insight.benefit}
+              </div>
+
+              <div className="pl-6 flex items-center justify-between">
+                <div className="flex gap-4 text-[10px]">
+                  <div>
+                    <span className="text-gray-400">Priority: </span>
+                    <span className={`font-bold ${insight.priority === 'Critical' ? 'text-danger' : 'text-warning'}`}>
+                      {insight.priority}
+                    </span>
+                  </div>
+                  <div>
+                    <span className="text-gray-400">Confidence: </span>
+                    <span className="font-bold text-success">{insight.conf}%</span>
+                  </div>
+                  <div>
+                    <span className="text-gray-400">Est. Cost: </span>
+                    <span className="font-bold text-white">{insight.cost}</span>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-1 text-[10px] text-accentPurple font-bold hover:underline">
+                  <span>SHAP Explain</span>
+                  <ChevronRight className="w-3.5 h-3.5" />
+                </div>
+              </div>
+            </motion.div>
+          );
+        })}
+      </div>
+
+      {/* SHAP Feature Importance Detail Drawer for Selected Insight */}
+      <AnimatePresence>
+        {selectedInsight && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: 'auto' }}
+            exit={{ opacity: 0, height: 0 }}
+            className="mt-3 pt-3 border-t border-accentPurple/40 bg-black/40 p-4 rounded-xl relative z-10"
+          >
+            <div className="flex justify-between items-center mb-3">
+              <div className="flex items-center gap-2">
+                <BarChart2 className="w-4 h-4 text-accentPurple" />
+                <h4 className="text-xs font-bold text-white uppercase tracking-wider">
+                  SHAP Feature Importance Analysis
+                </h4>
+              </div>
+              <button
+                onClick={() => setSelectedInsight(null)}
+                className="text-gray-400 hover:text-white p-1"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            <p className="text-[10px] text-gray-400 mb-3">
+              The neural network evaluated the following telemetry feature weights to derive this recommendation:
+            </p>
+
+            {/* SHAP Feature Weight Bars */}
+            <div className="space-y-2 mb-4">
+              {selectedInsight.shapFeatures.map(feat => (
+                <div key={feat.feature}>
+                  <div className="flex justify-between text-[10px] mb-1">
+                    <span className="text-gray-300 font-medium">{feat.feature}</span>
+                    <span className="font-mono font-bold text-white">{feat.weight}</span>
+                  </div>
+                  <div className="w-full bg-black/60 rounded-full h-1.5 overflow-hidden">
+                    <div
+                      className="h-1.5 rounded-full"
+                      style={{ width: feat.weight, backgroundColor: feat.color }}
+                    ></div>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            <div className="flex gap-2">
+              <button
+                onClick={() => handleExecuteInsight(selectedInsight)}
+                disabled={isExecuting || selectedInsight.executed}
+                className="flex-1 bg-accentPurple hover:bg-accentPurple/80 text-white text-xs py-2 rounded-lg font-bold transition-all flex items-center justify-center gap-1.5 shadow-md shadow-accentPurple/30 disabled:opacity-50"
+              >
+                {selectedInsight.executed ? (
+                  <>
+                    <CheckCircle2 className="w-4 h-4 text-white" /> Policy Deployed
+                  </>
+                ) : (
+                  <>
+                    <Play className="w-4 h-4" /> Execute XAI Recommendation
+                  </>
+                )}
+              </button>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+}
+

@@ -1,0 +1,35 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-background text-gray-100;
+  }
+  
+  .light-mode {
+    filter: invert(1) hue-rotate(180deg);
+  }
+  
+  .light-mode img, .light-mode video, .light-mode svg {
+    filter: invert(1) hue-rotate(180deg);
+  }
+}
+
+@layer utilities {
+  .glass {
+    @apply bg-white/5 backdrop-blur-md border border-white/10 shadow-[0_4px_30px_rgba(0,0,0,0.5)];
+  }
+  
+  .glass-card {
+    @apply glass rounded-2xl p-6 transition-all duration-300;
+  }
+  
+  .glass-card:hover {
+    @apply border-primary/50 shadow-[0_0_20px_rgba(37,99,235,0.15)] scale-[1.02];
+  }
+
+  .text-gradient {
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-secondary to-primary;
+  }
+}

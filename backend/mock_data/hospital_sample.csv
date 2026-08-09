@@ -1,0 +1,6 @@
+hospital_name,beds_capacity,doctors_count,current_patients
+Pragma General,150,25,60
+Westside Clinic,40,6,12
+Southend Medical Center,100,18,85
+East Gate Sanitarium,80,10,30
+North Hills Hospital,120,20,45

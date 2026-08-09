@@ -1,0 +1,56 @@
+version: '3.8'
+
+services:
+  pragma_pg:
+    image: postgres:15-alpine
+    container_name: pragma_postgres
+    environment:
+      POSTGRES_USER: pragma_user
+      POSTGRES_PASSWORD: pragma_password
+      POSTGRES_DB: pragma_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - pragma_pg_data:/var/lib/postgresql/data
+    restart: always
+
+  pragma_redis:
+    image: redis:7-alpine
+    container_name: pragma_redis
+    ports:
+      - "6379:6379"
+    restart: always
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: pragma_backend
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./backend:/app
+    environment:
+      - SECRET_KEY=pragma_prod_secret_key_12938129381
+      - DATABASE_URL=postgresql://pragma_user:pragma_password@pragma_pg:5432/pragma_db
+      - REDIS_URL=redis://pragma_redis:6379/0
+      - LLM_PROVIDER=ollama
+      - OLLAMA_BASE_URL=http://host.docker.internal:11434
+    depends_on:
+      - pragma_pg
+      - pragma_redis
+    restart: always
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: pragma_frontend
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+    restart: always
+
+volumes:
+  pragma_pg_data:

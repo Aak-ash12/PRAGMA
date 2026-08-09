@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>PRAGMA — Multi-Agent ABM Simulation</title>
+<style>
+  
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    width: 2400px; height: 1600px; background: #090D16;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    color: #F1F5F9; position: relative; overflow: hidden; display: flex;
+  }
+  .sidebar {
+    width: 280px; height: 100%; background-color: #0B1120; border-right: 2px solid #1E293B;
+    padding: 30px 24px; display: flex; flex-direction: column; position: fixed; left: 0; top: 0; z-index: 100;
+  }
+  .sidebar-logo { display: flex; align-items: center; gap: 12px; margin-bottom: 40px; }
+  .logo-box {
+    background: linear-gradient(135deg, #2563EB, #1D4ED8); color: #FFFFFF; font-weight: 800; font-size: 20px;
+    width: 38px; height: 38px; border-radius: 8px; display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 4px 10px rgba(37, 99, 235, 0.3);
+  }
+  .logo-text { font-size: 22px; font-weight: 800; color: #FFFFFF; letter-spacing: 0.5px; }
+  .sidebar-menu { display: flex; flex-direction: column; gap: 8px; }
+  .menu-item {
+    display: flex; align-items: center; gap: 12px; padding: 12px 16px; border-radius: 10px;
+    font-size: 14px; font-weight: 600; color: #94A3B8; text-decoration: none; transition: all 0.2s ease;
+  }
+  .menu-item-active {
+    background-color: #1E293B; color: #38BDF8; border-left: 3px solid #38BDF8;
+    border-radius: 0 10px 10px 0; padding-left: 13px;
+  }
+  .main-content { flex: 1; margin-left: 280px; padding: 40px 50px; display: flex; flex-direction: column; gap: 24px; }
+  .navbar { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #1E293B; padding-bottom: 20px; }
+  .nav-title { font-size: 28px; font-weight: 800; color: #FFFFFF; letter-spacing: -0.5px; }
+  .nav-user { display: flex; align-items: center; gap: 14px; }
+  .user-badge {
+    background-color: rgba(56, 189, 248, 0.1); border: 1px solid rgba(56, 189, 248, 0.2);
+    color: #38BDF8; font-size: 11px; font-weight: 700; text-transform: uppercase; padding: 4px 12px; border-radius: 12px;
+  }
+  .glass-card {
+    background: rgba(15, 23, 42, 0.85); border: 1.5px solid #1E293B; border-radius: 20px;
+    padding: 24px; box-shadow: 0 10px 15px rgba(0,0,0,0.2); display: flex; flex-direction: column;
+  }
+  .card-title-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; border-bottom: 1.5px solid #1E293B; padding-bottom: 12px; }
+  .card-title { font-size: 18px; font-weight: 700; color: #FFFFFF; display: flex; align-items: center; gap: 10px; }
+  .card-subtitle { font-size: 11px; font-weight: 700; color: #64748B; text-transform: uppercase; letter-spacing: 1px; }
+    
+  .controls-row { display: flex; justify-content: space-between; align-items: center; background-color: #0F172A; border: 1.5px solid #1E293B; border-radius: 16px; padding: 16px 24px; }
+  .ctrl-group { display: flex; align-items: center; gap: 16px; }
+  .btn { background-color: #2563EB; color: #FFFFFF; border: none; border-radius: 8px; padding: 10px 20px; font-size: 14px; font-weight: 700; cursor: pointer; }
+  .btn-secondary { background-color: #334155; color: #94A3B8; }
+  .btn-success { background-color: #10B981; }
+  .sim-status { font-family: monospace; font-size: 14px; color: #34D399; font-weight: 700; }
+  
+  .layout-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 24px; height: 500px; }
+  .grid-map { flex: 1; background-color: #0A0E17; border-radius: 12px; overflow: hidden; position: relative; display: flex; align-items: center; justify-content: center; }
+  
+  .bottom-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; height: 350px; }
+  .chart-svg { width: 100%; height: 100%; }
+</style>
+</head>
+<body>
+  
+    <div class="sidebar">
+      <div class="sidebar-logo">
+        <div class="logo-box">P</div>
+        <div class="logo-text">PRAGMA</div>
+      </div>
+      <div class="sidebar-menu">
+    <a class="menu-item" href="#"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/></svg>Dashboard</a><a class="menu-item" href="#"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>City Digital Twin</a><a class="menu-item menu-item-active" href="#"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>Multi-Agent ABM</a><a class="menu-item" href="#"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21.21 15.89A10 10 0 1 1 8 2.83"/></svg>Crisis Prediction</a><a class="menu-item" href="#"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>Policy Sandbox</a><a class="menu-item" href="#"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>Explainable AI</a><a class="menu-item" href="#"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>Advisor & Reports</a>
+      </div>
+    </div>
+    
+  <div class="main-content">
+    <div class="navbar">
+      <h1 class="nav-title">Multi-Agent Simulation Sandbox (Mesa ABM)</h1>
+      <div class="nav-user"><span class="user-badge">ABM Engine Layers</span></div>
+    </div>
+
+    <!-- Controls Row -->
+    <div class="controls-row">
+      <div class="ctrl-group">
+        <span style="font-weight: 700;">Scenario Selection:</span>
+        <button class="btn btn-secondary">Epidemic Contagion</button>
+        <button class="btn">Coastal Surge Flood</button>
+        <button class="btn btn-secondary">Utilities Load Balancing</button>
+      </div>
+      <div class="ctrl-group">
+        <button class="btn btn-success">▶ Run</button>
+        <button class="btn btn-secondary">⏸ Pause</button>
+        <button class="btn btn-secondary">⏭ Step</button>
+        <button class="btn btn-secondary">↺ Reset</button>
+        <span class="sim-status">Step: 142 / 500 [Executing...]</span>
+      </div>
+    </div>
+
+    <!-- Layout Grid: Map and Stats -->
+    <div class="layout-grid">
+      <div class="glass-card">
+        <div class="card-title-bar">
+          <h2 class="card-title">Mesa 50x50 Spatial Grid</h2>
+          <span class="card-subtitle">Active Agents mobility</span>
+        </div>
+        <div class="grid-map">
+          <!-- Render stylized grid cells with agent dots -->
+          <svg width="600" height="400" viewBox="0 0 600 400" style="background-color: #0F172A;">
+            <!-- Grid gridlines -->
+            <g stroke="#1E293B" stroke-width="0.5">
+              <line x1="0" y1="0" x2="0" y2="400" /><line x1="20" y1="0" x2="20" y2="400" /><line x1="40" y1="0" x2="40" y2="400" /><line x1="60" y1="0" x2="60" y2="400" /><line x1="80" y1="0" x2="80" y2="400" /><line x1="100" y1="0" x2="100" y2="400" /><line x1="120" y1="0" x2="120" y2="400" /><line x1="140" y1="0" x2="140" y2="400" /><line x1="160" y1="0" x2="160" y2="400" /><line x1="180" y1="0" x2="180" y2="400" /><line x1="200" y1="0" x2="200" y2="400" /><line x1="220" y1="0" x2="220" y2="400" /><line x1="240" y1="0" x2="240" y2="400" /><line x1="260" y1="0" x2="260" y2="400" /><line x1="280" y1="0" x2="280" y2="400" /><line x1="300" y1="0" x2="300" y2="400" /><line x1="320" y1="0" x2="320" y2="400" /><line x1="340" y1="0" x2="340" y2="400" /><line x1="360" y1="0" x2="360" y2="400" /><line x1="380" y1="0" x2="380" y2="400" /><line x1="400" y1="0" x2="400" y2="400" /><line x1="420" y1="0" x2="420" y2="400" /><line x1="440" y1="0" x2="440" y2="400" /><line x1="460" y1="0" x2="460" y2="400" /><line x1="480" y1="0" x2="480" y2="400" /><line x1="500" y1="0" x2="500" y2="400" /><line x1="520" y1="0" x2="520" y2="400" /><line x1="540" y1="0" x2="540" y2="400" /><line x1="560" y1="0" x2="560" y2="400" /><line x1="580" y1="0" x2="580" y2="400" />
+              <line x1="0" y1="0" x2="600" y2="0" /><line x1="0" y1="20" x2="600" y2="20" /><line x1="0" y1="40" x2="600" y2="40" /><line x1="0" y1="60" x2="600" y2="60" /><line x1="0" y1="80" x2="600" y2="80" /><line x1="0" y1="100" x2="600" y2="100" /><line x1="0" y1="120" x2="600" y2="120" /><line x1="0" y1="140" x2="600" y2="140" /><line x1="0" y1="160" x2="600" y2="160" /><line x1="0" y1="180" x2="600" y2="180" /><line x1="0" y1="200" x2="600" y2="200" /><line x1="0" y1="220" x2="600" y2="220" /><line x1="0" y1="240" x2="600" y2="240" /><line x1="0" y1="260" x2="600" y2="260" /><line x1="0" y1="280" x2="600" y2="280" /><line x1="0" y1="300" x2="600" y2="300" /><line x1="0" y1="320" x2="600" y2="320" /><line x1="0" y1="340" x2="600" y2="340" /><line x1="0" y1="360" x2="600" y2="360" /><line x1="0" y1="380" x2="600" y2="380" />
+            </g>
+            <!-- Road Paths (Thicker gray lanes) -->
+            <rect x="280" y="0" width="40" height="400" fill="#1E293B" opacity="0.6" />
+            <rect x="0" y="180" width="600" height="40" fill="#1E293B" opacity="0.6" />
+            
+            <!-- Agent Dots (Red = Sick/Vulnerable, Green = Healthy, Blue = Doctor, Yellow = Infrastructure workers) -->
+            <!-- Healthy -->
+            <circle cx="100" cy="100" r="4" fill="#10B981" />
+            <circle cx="140" cy="80" r="4" fill="#10B981" />
+            <circle cx="220" cy="120" r="4" fill="#10B981" />
+            <circle cx="440" cy="90" r="4" fill="#10B981" />
+            <circle cx="380" cy="260" r="4" fill="#10B981" />
+            <circle cx="120" cy="240" r="4" fill="#10B981" />
+            <circle cx="500" cy="300" r="4" fill="#10B981" />
+            <!-- Vulnerable / Infected -->
+            <circle cx="300" cy="200" r="5" fill="#EF4444" stroke="#FFFFFF" stroke-width="1" />
+            <circle cx="290" cy="190" r="5" fill="#EF4444" />
+            <circle cx="310" cy="210" r="5" fill="#EF4444" />
+            <!-- Emergency Responders (Blue/Yellow) -->
+            <polygon points="120,310 128,322 112,322" fill="#3B82F6" />
+            <polygon points="450,210 458,222 442,222" fill="#F59E0B" />
+          </svg>
+        </div>
+      </div>
+      <div class="glass-card">
+        <div class="card-title-bar">
+          <h2 class="card-title">Simulation State</h2>
+          <span class="card-subtitle">Active Counts</span>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 16px; justify-content: center; height: 100%;">
+          <div style="display: flex; justify-content: space-between; border-bottom: 1px solid #1E293B; padding-bottom: 8px;">
+            <span>Healthy Citizen Agents</span>
+            <span style="font-weight: 700; color: #10B981;">8,420</span>
+          </div>
+          <div style="display: flex; justify-content: space-between; border-bottom: 1px solid #1E293B; padding-bottom: 8px;">
+            <span>Infected Citizen Agents</span>
+            <span style="font-weight: 700; color: #EF4444;">1,240</span>
+          </div>
+          <div style="display: flex; justify-content: space-between; border-bottom: 1px solid #1E293B; padding-bottom: 8px;">
+            <span>Critical ICU Cases</span>
+            <span style="font-weight: 700; color: #EC4899;">140</span>
+          </div>
+          <div style="display: flex; justify-content: space-between; border-bottom: 1px solid #1E293B; padding-bottom: 8px;">
+            <span>Active Ambulances</span>
+            <span style="font-weight: 700; color: #38BDF8;">12 / 15</span>
+          </div>
+          <div style="display: flex; justify-content: space-between; border-bottom: 1px solid #1E293B; padding-bottom: 8px;">
+            <span>Water Flow (cusecs)</span>
+            <span style="font-weight: 700; color: #F59E0B;">14,000</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bottom curves -->
+    <div class="bottom-grid">
+      <div class="glass-card">
+        <div class="card-title-bar">
+          <h2 class="card-title">SIR Contagion curves</h2>
+          <span class="card-subtitle">Telemetry History</span>
+        </div>
+        <div style="flex: 1;">
+          <svg class="chart-svg" viewBox="0 0 300 150">
+            <!-- Grid lines -->
+            <line x1="30" y1="20" x2="280" y2="20" stroke="#1E293B" stroke-width="0.5" />
+            <line x1="30" y1="70" x2="280" y2="70" stroke="#1E293B" stroke-width="0.5" />
+            <line x1="30" y1="120" x2="280" y2="120" stroke="#1E293B" stroke-width="1" />
+            <!-- S Curve (Susceptible) -->
+            <path d="M 30,30 Q 100,40 180,100 T 280,118" fill="none" stroke="#3B82F6" stroke-width="2" />
+            <!-- I Curve (Infected) -->
+            <path d="M 30,120 Q 100,100 150,40 T 280,110" fill="none" stroke="#EF4444" stroke-width="2" />
+            <!-- R Curve (Recovered) -->
+            <path d="M 30,120 Q 120,120 180,80 T 280,30" fill="none" stroke="#10B981" stroke-width="2" />
+          </svg>
+        </div>
+      </div>
+      <div class="glass-card">
+        <div class="card-title-bar">
+          <h2 class="card-title">Resource Load Analytics</h2>
+          <span class="card-subtitle">Grid Power Consumption</span>
+        </div>
+        <div style="flex: 1;">
+          <svg class="chart-svg" viewBox="0 0 300 150">
+            <line x1="30" y1="20" x2="280" y2="20" stroke="#1E293B" stroke-width="0.5" />
+            <line x1="30" y1="70" x2="280" y2="70" stroke="#1E293B" stroke-width="0.5" />
+            <line x1="30" y1="120" x2="280" y2="120" stroke="#1E293B" stroke-width="1" />
+            <path d="M 30,90 L 60,85 L 90,110 L 120,40 L 150,60 L 180,30 L 210,95 L 240,40 L 280,25" fill="none" stroke="#F59E0B" stroke-width="2.5" />
+          </svg>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

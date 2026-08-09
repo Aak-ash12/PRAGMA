@@ -1,0 +1,809 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>PRAGMA — Government Analytics Dashboard</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+  
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+  
+  body {
+    width: 2400px;
+    height: 1600px;
+    background: #090D16;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    color: #F1F5F9;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+  }
+
+  /* Sidebar Styles */
+  .sidebar {
+    width: 280px;
+    height: 100%;
+    background-color: #0B1120;
+    border-right: 2px solid #1E293B;
+    padding: 30px 24px;
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    left: 0;
+    top: 0;
+    z-index: 100;
+  }
+
+  .sidebar-logo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 40px;
+  }
+
+  .logo-box {
+    background: linear-gradient(135deg, #2563EB, #1D4ED8);
+    color: #FFFFFF;
+    font-weight: 800;
+    font-size: 20px;
+    width: 38px;
+    height: 38px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 10px rgba(37, 99, 235, 0.3);
+  }
+
+  .logo-text {
+    font-size: 22px;
+    font-weight: 800;
+    color: #FFFFFF;
+    letter-spacing: 0.5px;
+  }
+
+  .sidebar-menu {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .menu-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #94A3B8;
+    text-decoration: none;
+    transition: all 0.2s ease;
+  }
+
+  .menu-item-active {
+    background-color: #1E293B;
+    color: #38BDF8;
+    border-left: 3px solid #38BDF8;
+    border-radius: 0 10px 10px 0;
+    padding-left: 13px;
+  }
+
+  /* Main Container */
+  .main-content {
+    flex: 1;
+    margin-left: 280px;
+    padding: 40px 50px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+
+  /* Navbar Styles */
+  .navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 2px solid #1E293B;
+    padding-bottom: 20px;
+  }
+
+  .nav-title {
+    font-size: 28px;
+    font-weight: 800;
+    color: #FFFFFF;
+    letter-spacing: -0.5px;
+  }
+
+  .nav-user {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+
+  .user-badge {
+    background-color: rgba(56, 189, 248, 0.1);
+    border: 1px solid rgba(56, 189, 248, 0.2);
+    color: #38BDF8;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    padding: 4px 12px;
+    border-radius: 12px;
+  }
+
+  /* KPI Card Row */
+  .kpi-row {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 20px;
+  }
+
+  .kpi-card {
+    background: rgba(15, 23, 42, 0.85);
+    border: 1.5px solid #1E293B;
+    border-radius: 16px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 120px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  }
+
+  .kpi-header {
+    font-size: 12px;
+    font-weight: 700;
+    color: #94A3B8;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .kpi-body {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+  }
+
+  .kpi-value {
+    font-size: 28px;
+    font-weight: 800;
+    color: #FFFFFF;
+  }
+
+  .kpi-badge {
+    font-size: 11px;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 12px;
+  }
+
+  .badge-success { background-color: rgba(16, 185, 129, 0.1); color: #34D399; border: 1.5px solid rgba(16, 185, 129, 0.2); }
+  .badge-warning { background-color: rgba(245, 158, 11, 0.1); color: #FBBF24; border: 1.5px solid rgba(245, 158, 11, 0.2); }
+
+  /* Row 2: Map & Live Alerts */
+  .center-row {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 24px;
+    height: 520px;
+  }
+
+  .glass-card {
+    background: rgba(15, 23, 42, 0.85);
+    border: 1.5px solid #1E293B;
+    border-radius: 20px;
+    padding: 24px;
+    box-shadow: 0 10px 15px rgba(0,0,0,0.2);
+    display: flex;
+    flex-direction: column;
+  }
+
+  .card-title-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+    border-bottom: 1.5px solid #1E293B;
+    padding-bottom: 12px;
+  }
+
+  .card-title {
+    font-size: 18px;
+    font-weight: 700;
+    color: #FFFFFF;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .card-subtitle {
+    font-size: 11px;
+    font-weight: 700;
+    color: #64748B;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  /* Live Map styles */
+  .map-wrapper {
+    flex: 1;
+    background-color: #0A0E17;
+    border-radius: 12px;
+    overflow: hidden;
+    position: relative;
+  }
+
+  /* Live Alerts List */
+  .alerts-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    flex: 1;
+    overflow-y: auto;
+  }
+
+  .alert-item {
+    background-color: rgba(30, 41, 59, 0.5);
+    border: 1px solid #1E293B;
+    border-radius: 12px;
+    padding: 14px;
+    display: flex;
+    gap: 12px;
+  }
+
+  .alert-icon {
+    flex-shrink: 0;
+    width: 20px;
+    height: 20px;
+    margin-top: 2px;
+  }
+
+  .alert-body {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .alert-title-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .alert-title {
+    font-size: 14px;
+    font-weight: 700;
+    color: #FFFFFF;
+  }
+
+  .alert-time {
+    font-size: 11px;
+    color: #64748B;
+  }
+
+  .alert-desc {
+    font-size: 12px;
+    color: #94A3B8;
+    line-height: 1.4;
+  }
+
+  .alert-critical { border-left: 3px solid #EF4444; }
+  .alert-warning { border-left: 3px solid #F59E0B; }
+  .alert-info { border-left: 3px solid #3B82F6; }
+
+  /* Row 3: Bottom Panels (3 Columns) */
+  .bottom-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+    height: 380px;
+  }
+
+  .recommendation-item {
+    background-color: rgba(17, 24, 39, 0.6);
+    border: 1.5px solid #1E293B;
+    border-radius: 12px;
+    padding: 14px 16px;
+    margin-bottom: 10px;
+  }
+
+  .rec-header {
+    display: flex;
+    justify-content: space-between;
+    font-size: 11px;
+    font-weight: 700;
+    color: #38BDF8;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 4px;
+  }
+
+  .rec-desc {
+    font-size: 12px;
+    color: #E2E8F0;
+    line-height: 1.4;
+  }
+
+  /* Row 4: Agent Status Panel (Full Width) */
+  .agent-panel {
+    height: 140px;
+  }
+
+  .agent-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+    flex: 1;
+  }
+
+  .agent-card {
+    background-color: #0F172A;
+    border: 1.5px solid #1E293B;
+    border-radius: 12px;
+    padding: 16px 20px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .agent-avatar {
+    background-color: rgba(99, 102, 241, 0.1);
+    color: #818CF8;
+    width: 44px;
+    height: 44px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .agent-info {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .agent-name {
+    font-size: 14px;
+    font-weight: 700;
+    color: #FFFFFF;
+  }
+
+  .agent-task {
+    font-size: 11px;
+    color: #94A3B8;
+  }
+
+  .agent-status-tag {
+    font-size: 9px;
+    font-weight: 700;
+    text-transform: uppercase;
+    padding: 2px 8px;
+    border-radius: 10px;
+    width: fit-content;
+  }
+
+  .status-active { background-color: rgba(16, 185, 129, 0.1); color: #34D399; }
+  .status-idle { background-color: rgba(59, 130, 246, 0.1); color: #60A5FA; }
+
+  /* SVG Drawing Elements */
+  .chart-svg {
+    width: 100%;
+    height: 100%;
+  }
+
+  /* Pulsing map hotspots */
+  .hotspot {
+    position: absolute;
+    cursor: pointer;
+  }
+
+  .pulse-circle {
+    position: absolute;
+    transform: translate(-50%, -50%);
+    border-radius: 50%;
+  }
+
+  .pulse-glow {
+    position: absolute;
+    transform: translate(-50%, -50%);
+    border-radius: 50%;
+    animation: mapPulse 2s infinite;
+  }
+
+  @keyframes mapPulse {
+    0% { width: 10px; height: 10px; opacity: 0.8; }
+    100% { width: 50px; height: 50px; opacity: 0; }
+  }
+</style>
+</head>
+<body>
+
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+    <div class="sidebar-logo">
+      <div class="logo-box">P</div>
+      <div class="logo-text">PRAGMA</div>
+    </div>
+    <div class="sidebar-menu">
+      <a class="menu-item menu-item-active" href="#">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/></svg>
+        Dashboard
+      </a>
+      <a class="menu-item" href="#">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>
+        City Digital Twin
+      </a>
+      <a class="menu-item" href="#">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        Multi-Agent ABM
+      </a>
+      <a class="menu-item" href="#">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21.21 15.89A10 10 0 1 1 8 2.83"/></svg>
+        Crisis Prediction
+      </a>
+      <a class="menu-item" href="#">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        Policy Sandbox
+      </a>
+      <a class="menu-item" href="#">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+        Explainable AI
+      </a>
+      <a class="menu-item" href="#">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+        Advisor & Reports
+      </a>
+    </div>
+  </div>
+
+  <!-- MAIN CONTENT CONTAINER -->
+  <div class="main-content">
+    
+    <!-- NAVBAR -->
+    <div class="navbar">
+      <h1 class="nav-title">Predictive Risk & Governance Command</h1>
+      <div class="nav-user">
+        <span class="user-badge">Research Analyst Role</span>
+        <span style="font-size: 14px; font-weight: 700;">Aakash Office Dashboard</span>
+      </div>
+    </div>
+
+    <!-- 6 KPI CARDS ROW -->
+    <div class="kpi-row">
+      <!-- Card 1 -->
+      <div class="kpi-card">
+        <div class="kpi-header">
+          <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          Governance Score
+        </div>
+        <div class="kpi-body">
+          <div class="kpi-value">95.0%</div>
+          <span class="kpi-badge badge-success">+2.4%</span>
+        </div>
+      </div>
+      <!-- Card 2 -->
+      <div class="kpi-card">
+        <div class="kpi-header">
+          <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="7.86 2 16.14 2 22 7.86 22 16.14 16.14 22 7.86 22 2 16.14 2 7.86 7.86 2"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          Active Alerts
+        </div>
+        <div class="kpi-body">
+          <div class="kpi-value">12</div>
+          <span class="kpi-badge badge-warning">Elevated</span>
+        </div>
+      </div>
+      <!-- Card 3 -->
+      <div class="kpi-card">
+        <div class="kpi-header">
+          <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          Active AI Agents
+        </div>
+        <div class="kpi-body">
+          <div class="kpi-value">10</div>
+          <span class="kpi-badge badge-success">Online</span>
+        </div>
+      </div>
+      <!-- Card 4 -->
+      <div class="kpi-card">
+        <div class="kpi-header">
+          <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+          Resources Deployed
+        </div>
+        <div class="kpi-body">
+          <div class="kpi-value">1,420</div>
+          <span class="kpi-badge badge-success">Active</span>
+        </div>
+      </div>
+      <!-- Card 5 -->
+      <div class="kpi-card">
+        <div class="kpi-header">
+          <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+          AI Confidence
+        </div>
+        <div class="kpi-body">
+          <div class="kpi-value">98.5%</div>
+          <span class="kpi-badge badge-success">Nominal</span>
+        </div>
+      </div>
+      <!-- Card 6 -->
+      <div class="kpi-card">
+        <div class="kpi-header">
+          <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/></svg>
+          Current Risk Index
+        </div>
+        <div class="kpi-body">
+          <div class="kpi-value">Medium</div>
+          <span class="kpi-badge badge-warning">Elevated</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- CENTER ROW: MAP & LIVE ALERTS -->
+    <div class="center-row">
+      <!-- Live Map (Left Panel) -->
+      <div class="glass-card">
+        <div class="card-title-bar">
+          <h2 class="card-title">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="3 6 9 3 15 6 21 3 21 18 15 15 9 18 3 15"/><line x1="9" y1="3" x2="9" y2="18"/><line x1="15" y1="6" x2="15" y2="21"/></svg>
+            Geospatial Twin Twin (Tamil Nadu)
+          </h2>
+          <span class="card-subtitle">Active Simulation Layers</span>
+        </div>
+        <div class="map-wrapper">
+          <!-- Stylized map drawing of Tamil Nadu with nodes -->
+          <svg width="100%" height="100%" viewBox="0 0 700 450" style="background-color: #0E1525;">
+            <!-- Grid backdrop -->
+            <g stroke="#1E293B" stroke-dasharray="4,4" stroke-width="0.5">
+              <line x1="150" y1="0" x2="150" y2="450" />
+              <line x1="300" y1="0" x2="300" y2="450" />
+              <line x1="450" y1="0" x2="450" y2="450" />
+              <line x1="600" y1="0" x2="600" y2="450" />
+              <line x1="0" y1="150" x2="700" y2="150" />
+              <line x1="0" y1="300" x2="700" y2="300" />
+            </g>
+
+            <!-- Shoreline contour -->
+            <path d="M 500,0 Q 560,150 480,240 T 560,450 L 700,450 L 700,0 Z" fill="#0A0E17" opacity="0.8" />
+            <path d="M 500,0 Q 560,150 480,240 T 560,450" fill="none" stroke="#1E3A8A" stroke-width="2" />
+
+            <!-- DISTRICT HOTSPOT MARKERS -->
+            <!-- 1. Chennai (Critical) -->
+            <g transform="translate(510, 80)">
+              <circle cx="0" cy="0" r="18" fill="#EF4444" opacity="0.25"><animate attributeName="r" values="8;20;8" dur="2s" repeatCount="indefinite" /></circle>
+              <circle cx="0" cy="0" r="6" fill="#EF4444" stroke="#FFFFFF" stroke-width="1.5" />
+              <text x="14" y="4" fill="#F8FAFC" font-size="12" font-weight="700">Chennai (96% ICU Overload)</text>
+            </g>
+
+            <!-- 2. Salem (Grid strain) -->
+            <g transform="translate(360, 180)">
+              <circle cx="0" cy="0" r="14" fill="#3B82F6" opacity="0.25"><animate attributeName="r" values="6;16;6" dur="2s" repeatCount="indefinite" /></circle>
+              <circle cx="0" cy="0" r="6" fill="#3B82F6" stroke="#FFFFFF" stroke-width="1.5" />
+              <text x="14" y="4" fill="#E2E8F0" font-size="12" font-weight="600">Salem (Grid Strain)</text>
+            </g>
+
+            <!-- 3. Coimbatore (Water Deficit) -->
+            <g transform="translate(260, 260)">
+              <circle cx="0" cy="0" r="14" fill="#F59E0B" opacity="0.25"><animate attributeName="r" values="6;16;6" dur="2s" repeatCount="indefinite" /></circle>
+              <circle cx="0" cy="0" r="6" fill="#F59E0B" stroke="#FFFFFF" stroke-width="1.5" />
+              <text x="-140" y="4" fill="#E2E8F0" font-size="12" font-weight="600">Coimbatore (75% Water Deficit)</text>
+            </g>
+
+            <!-- 4. Madurai (Critical O2) -->
+            <g transform="translate(340, 340)">
+              <circle cx="0" cy="0" r="14" fill="#EC4899" opacity="0.25"><animate attributeName="r" values="6;16;6" dur="2s" repeatCount="indefinite" /></circle>
+              <circle cx="0" cy="0" r="6" fill="#EC4899" stroke="#FFFFFF" stroke-width="1.5" />
+              <text x="14" y="4" fill="#E2E8F0" font-size="12" font-weight="600">Madurai (Critical Oxygen)</text>
+            </g>
+
+            <!-- 5. Trichy (Normal) -->
+            <g transform="translate(420, 270)">
+              <circle cx="0" cy="0" r="5" fill="#10B981" stroke="#FFFFFF" stroke-width="1.5" />
+              <text x="12" y="4" fill="#94A3B8" font-size="11" font-weight="500">Trichy (Stable)</text>
+            </g>
+          </svg>
+        </div>
+      </div>
+
+      <!-- Live Alerts Panel (Right Panel) -->
+      <div class="glass-card">
+        <div class="card-title-bar">
+          <h2 class="card-title">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="7.86 2 16.14 2 22 7.86 22 16.14 16.14 22 7.86 22 2 16.14 2 7.86 7.86 2"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+            Live Critical Alerts
+          </h2>
+          <span class="card-subtitle">Active Feeds</span>
+        </div>
+        <div class="alerts-list">
+          
+          <!-- Alert 1 -->
+          <div class="alert-item alert-critical">
+            <svg class="alert-icon" viewBox="0 0 24 24" fill="none" stroke="#EF4444" stroke-width="2.5"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+            <div class="alert-body">
+              <div class="alert-title-row">
+                <span class="alert-title">ICU Overload predicted in Chennai</span>
+                <span class="alert-time">2m ago</span>
+              </div>
+              <span class="alert-desc">ICU bed capacity projected to exceed 98% in 48 hours based on SIR infection trajectory.</span>
+            </div>
+          </div>
+
+          <!-- Alert 2 -->
+          <div class="alert-item alert-warning">
+            <svg class="alert-icon" viewBox="0 0 24 24" fill="none" stroke="#F59E0B" stroke-width="2.5"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+            <div class="alert-body">
+              <div class="alert-title-row">
+                <span class="alert-title">Water inflow surge at Chembarambakkam</span>
+                <span class="alert-time">14m ago</span>
+              </div>
+              <span class="alert-desc">Reservoir inflow rate at 14,000 cusecs; sluice gate release recommended.</span>
+            </div>
+          </div>
+
+          <!-- Alert 3 -->
+          <div class="alert-item alert-warning">
+            <svg class="alert-icon" viewBox="0 0 24 24" fill="none" stroke="#F59E0B" stroke-width="2.5"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+            <div class="alert-body">
+              <div class="alert-title-row">
+                <span class="alert-title">Evacuation traffic congestion on NH-45</span>
+                <span class="alert-time">28m ago</span>
+              </div>
+              <span class="alert-desc">Major commuter gridlock causing delays on designated flood evacuation corridors.</span>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- BOTTOM ROW: 3 COLUMNS -->
+    <div class="bottom-row">
+      <!-- Col 1: Resource Matrix Pie Chart -->
+      <div class="glass-card">
+        <div class="card-title-bar">
+          <h2 class="card-title">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21.21 15.89A10 10 0 1 1 8 2.83"/><path d="M22 12A10 10 0 0 0 12 2v10z"/></svg>
+            Resource Allocation Matrix
+          </h2>
+          <span class="card-subtitle">Active Deployments</span>
+        </div>
+        <div style="flex: 1; display: flex; align-items: center; justify-content: center;">
+          <svg class="chart-svg" viewBox="0 0 200 200">
+            <!-- Pie slice: Doctors (35%) -->
+            <path d="M100,100 L100,10 A90,90 0 0,1 180,145 Z" fill="#3B82F6" stroke="#0F172A" stroke-width="2" />
+            <!-- Pie slice: Emergency Forces (45%) -->
+            <path d="M100,100 L180,145 A90,90 0 0,1 25,145 Z" fill="#10B981" stroke="#0F172A" stroke-width="2" />
+            <!-- Pie slice: Utilities (20%) -->
+            <path d="M100,100 L25,145 A90,90 0 0,1 100,10 Z" fill="#8B5CF6" stroke="#0F172A" stroke-width="2" />
+            <!-- Inner cutout for donut chart -->
+            <circle cx="100" cy="100" r="50" fill="#0F172A" />
+            <text x="100" y="95" fill="#94A3B8" font-size="10" font-weight="700" text-anchor="middle">TOTAL DEPLOYED</text>
+            <text x="100" y="115" fill="#FFFFFF" font-size="16" font-weight="800" text-anchor="middle">1,420</text>
+          </svg>
+        </div>
+      </div>
+
+      <!-- Col 2: Predictive Line Charts -->
+      <div class="glass-card">
+        <div class="card-title-bar">
+          <h2 class="card-title">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+            Predictive Risk Forecast
+          </h2>
+          <span class="card-subtitle">7-Day Horizon Projections</span>
+        </div>
+        <div style="flex: 1;">
+          <svg class="chart-svg" viewBox="0 0 300 200">
+            <!-- Grid lines -->
+            <line x1="30" y1="20" x2="280" y2="20" stroke="#1E293B" stroke-width="0.5" />
+            <line x1="30" y1="60" x2="280" y2="60" stroke="#1E293B" stroke-width="0.5" />
+            <line x1="30" y1="100" x2="280" y2="100" stroke="#1E293B" stroke-width="0.5" />
+            <line x1="30" y1="140" x2="280" y2="140" stroke="#1E293B" stroke-width="0.5" />
+            <line x1="30" y1="170" x2="280" y2="170" stroke="#1E293B" stroke-width="1" />
+            
+            <!-- Labels -->
+            <text x="10" y="174" fill="#64748B" font-size="9">0%</text>
+            <text x="10" y="104" fill="#64748B" font-size="9">50%</text>
+            <text x="8" y="24" fill="#64748B" font-size="9">100%</text>
+
+            <!-- Line: Infection Rate (Red) -->
+            <path d="M 30,150 Q 80,140 130,110 T 230,50 L 280,30" fill="none" stroke="#EF4444" stroke-width="2.5" />
+            <!-- Line: Grid Load (Blue) -->
+            <path d="M 30,120 Q 90,90 150,110 T 270,80 L 280,75" fill="none" stroke="#3B82F6" stroke-width="2" />
+            <!-- Line: Reservoir Inflow (Green) -->
+            <path d="M 30,160 Q 80,165 140,130 T 250,150 L 280,155" fill="none" stroke="#10B981" stroke-width="2" />
+          </svg>
+        </div>
+      </div>
+
+      <!-- Col 3: Policy Advisor Panel -->
+      <div class="glass-card">
+        <div class="card-title-bar">
+          <h2 class="card-title">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+            Active Policy Interventions
+          </h2>
+          <span class="card-subtitle">AI Advisory Briefs</span>
+        </div>
+        <div style="flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 10px;">
+          <!-- Recommendation 1 -->
+          <div class="recommendation-item">
+            <div class="rec-header">
+              <span>Healthcare Policy</span>
+              <span style="color: #EF4444;">Critical</span>
+            </div>
+            <div class="rec-desc">Increase ICU Reserve Budget by 14% to prevent 15% regional triage overflow.</div>
+          </div>
+          <!-- Recommendation 2 -->
+          <div class="recommendation-item">
+            <div class="rec-header">
+              <span>Disaster Prevention</span>
+              <span style="color: #EF4444;">Critical</span>
+            </div>
+            <div class="rec-desc">Deploy dynamic outfall suction pumps at Buckingham Canal to reduce flood risk by 42%.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ROW 4: AGENT STATUS PANEL -->
+    <div class="glass-card agent-panel">
+      <div class="card-title-bar" style="margin-bottom: 12px; border-bottom: none; padding-bottom: 0;">
+        <h2 class="card-title" style="font-size: 16px;">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l-7 4a2 2 0 0 0 2 0l7-4a2 2 0 0 0 1-1.73z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
+          Active AI Executive Advisor Crew (CrewAI + LangGraph)
+        </h2>
+        <span class="card-subtitle">Multi-Agent System Monitor</span>
+      </div>
+      <div class="agent-grid">
+        <!-- Agent 1 -->
+        <div class="agent-card">
+          <div class="agent-avatar">🏢</div>
+          <div class="agent-info">
+            <span class="agent-name">Urban Planner Agent</span>
+            <span class="agent-task">Task: Digital Twin Capacity Analysis</span>
+            <span class="agent-status-tag status-active">Active</span>
+          </div>
+        </div>
+        <!-- Agent 2 -->
+        <div class="agent-card">
+          <div class="agent-avatar">📊</div>
+          <div class="agent-info">
+            <span class="agent-name">Research Analyst Agent</span>
+            <span class="agent-task">Task: Telemetry Cross-Referencing</span>
+            <span class="agent-status-tag status-active">Active</span>
+          </div>
+        </div>
+        <!-- Agent 3 -->
+        <div class="agent-card">
+          <div class="agent-avatar">🏛️</div>
+          <div class="agent-info">
+            <span class="agent-name">Policy Advisor Agent</span>
+            <span class="agent-task">Task: Formulating Policy Briefs</span>
+            <span class="agent-status-tag status-idle">Idling</span>
+          </div>
+        </div>
+        <!-- Agent 4 -->
+        <div class="agent-card">
+          <div class="agent-avatar">🔊</div>
+          <div class="agent-info">
+            <span class="agent-name">Speech Synthesis Node</span>
+            <span class="agent-task">Task: Audio Briefings Compiler</span>
+            <span class="agent-status-tag status-active">Ready</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+</body>
+</html>

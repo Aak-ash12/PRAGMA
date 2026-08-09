@@ -1,0 +1,8 @@
+temperature,humidity,rainfall_mm,weather_condition
+28.5,75,4.2,Rainy
+32.0,60,0.0,Sunny
+24.1,90,45.8,Stormy
+35.4,50,0.0,Heatwave
+29.2,70,1.2,Sunny
+31.1,65,0.0,Sunny
+22.0,95,60.1,Stormy
