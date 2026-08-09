@@ -12,9 +12,9 @@ import emailjs from '@emailjs/browser';
 //   3. Create a Template with variables: {{to_email}}, {{reset_link}}, {{project_name}}
 //   4. Copy the Template ID and your Public Key from Account → API Keys
 // ──────────────────────────────────────────────────────
-const EMAILJS_SERVICE_ID = 'service_pragma';    // ← Replace with your Service ID
-const EMAILJS_TEMPLATE_ID = 'template_reset';   // ← Replace with your Template ID
-const EMAILJS_PUBLIC_KEY = 'YOUR_PUBLIC_KEY';    // ← Replace with your Public Key
+const EMAILJS_SERVICE_ID = 'service_qof44tn';    // ← Your Service ID (Added!)
+const EMAILJS_TEMPLATE_ID = 'template_iggxmbb';   // ← Your Template ID (Added!)
+const EMAILJS_PUBLIC_KEY = 'yB5cmyuKqumoS1nuebGvq';    // ← Your Public Key (Added!)
 
 export default function ForgotPasswordPage() {
   const [email, setEmail] = useState('');
