@@ -108,7 +108,14 @@ export default function Dashboard() {
 
   const getRoleTheme = () => {
     const roleLower = profile.role.toLowerCase();
-    if (roleLower.includes('disaster') || roleLower.includes('crisis') || profile.email.includes('crisis')) {
+    const emailLower = profile.email.toLowerCase();
+
+    const isCrisisOfficer = emailLower === 'crisis@pragma.gov' || emailLower === 'crisis' || roleLower === 'disaster mitigation lead';
+    const isUtilityOfficer = emailLower === 'utility@pragma.gov' || emailLower === 'utility' || roleLower === 'public infrastructure officer';
+    const isAnalystOfficer = emailLower === 'analyst@pragma.gov' || emailLower === 'analyst' || roleLower === 'ai policy administrator';
+    const isGovOfficer = emailLower === 'admin@pragma.gov' || emailLower === 'admin' || emailLower === 'caraxesdaemon07@gmail.com' || emailLower === 'officer@pragma.gov' || roleLower === 'government officer';
+
+    if (isCrisisOfficer) {
       return {
         title: 'Emergency Disaster Command & Crisis Operations HQ',
         badge: 'Crisis Authority',
@@ -124,7 +131,7 @@ export default function Dashboard() {
         ]
       };
     }
-    if (roleLower.includes('infrastructure') || roleLower.includes('utility') || profile.email.includes('utility')) {
+    if (isUtilityOfficer) {
       return {
         title: 'City Utilities & Transit Infrastructure Command',
         badge: 'Infrastructure Lead',
@@ -140,7 +147,7 @@ export default function Dashboard() {
         ]
       };
     }
-    if (roleLower.includes('policy') || roleLower.includes('analyst') || roleLower.includes('scientist') || profile.email.includes('analyst')) {
+    if (isAnalystOfficer) {
       return {
         title: 'Digital Twin Neural Swarm & XAI Research Lab',
         badge: 'AI Research Lead',
@@ -156,19 +163,36 @@ export default function Dashboard() {
         ]
       };
     }
-    // Default / Government Officer
+    if (isGovOfficer) {
+      return {
+        title: 'State Urban Governance & Executive Command HQ',
+        badge: 'Executive Admin',
+        accentColor: 'from-primary/25 via-blue-950/30 to-[#0d1527] border-primary/50 shadow-primary/20',
+        badgeColor: 'bg-primary/20 text-cyan-300 border-primary/40',
+        icon: ShieldCheck,
+        iconColor: 'text-primary',
+        alertText: 'GOVERNANCE FOCUS: 95.0% City SLA uptime active. ₹15,000 Cr municipal development budget under AI review.',
+        actions: [
+          { label: 'Review AI Policies', path: '/policies', icon: ShieldCheck, primary: true },
+          { label: 'Generate PDF Report', path: '/reports', icon: Layers, primary: false },
+          { label: 'Resource Redistribution', path: '/resources', icon: Activity, primary: false }
+        ]
+      };
+    }
+
+    // Default: Normal Citizen / Public Platform User Theme
     return {
-      title: 'State Urban Governance & Executive Command HQ',
-      badge: 'Executive Admin',
-      accentColor: 'from-primary/25 via-blue-950/30 to-[#0d1527] border-primary/50 shadow-primary/20',
-      badgeColor: 'bg-primary/20 text-cyan-300 border-primary/40',
-      icon: ShieldCheck,
+      title: 'Smart City Digital Twin & Analytics Portal',
+      badge: '',
+      accentColor: 'from-blue-600/20 via-slate-900/50 to-[#0d1527] border-blue-500/30 shadow-blue-950/20',
+      badgeColor: 'bg-white/10 text-gray-300 border-white/10',
+      icon: Building2,
       iconColor: 'text-primary',
-      alertText: 'GOVERNANCE FOCUS: 95.0% City SLA uptime active. ₹15,000 Cr municipal development budget under AI review.',
+      alertText: 'CITIZEN PORTAL: Real-time digital twin simulations, city predictive forecasting, and public analytics.',
       actions: [
-        { label: 'Review AI Policies', path: '/policies', icon: ShieldCheck, primary: true },
-        { label: 'Generate PDF Report', path: '/reports', icon: Layers, primary: false },
-        { label: 'Resource Redistribution', path: '/resources', icon: Activity, primary: false }
+        { label: 'Explore Simulations', path: '/simulation', icon: Activity, primary: true },
+        { label: 'View Risk Predictions', path: '/prediction', icon: AlertTriangle, primary: false },
+        { label: 'City Telemetry Analytics', path: '/analytics', icon: Layers, primary: false }
       ]
     };
   };
@@ -215,13 +239,18 @@ export default function Dashboard() {
                     <h2 className="text-xl font-bold text-white font-poppins">
                       {profile.name}
                     </h2>
-                    <span className={`text-[10px] font-mono font-bold px-2.5 py-0.5 rounded-full border uppercase ${roleTheme.badgeColor}`}>
-                      {profile.clearance.split('-')[0].trim()}
-                    </span>
+                    {profile.clearance && profile.clearance.toLowerCase().includes('level') && (
+                      <span className={`text-[10px] font-mono font-bold px-2.5 py-0.5 rounded-full border uppercase ${roleTheme.badgeColor}`}>
+                        {profile.clearance.split('-')[0].trim()}
+                      </span>
+                    )}
                   </div>
 
                   <div className="text-xs text-gray-300 font-medium">
-                    <span className="text-white font-semibold">{profile.role}</span> • {profile.department}
+                    <span className="text-white font-semibold">{profile.role}</span>
+                    {profile.department && profile.department !== 'Public Access Portal' && (
+                      <span> • {profile.department}</span>
+                    )}
                   </div>
 
                   <p className="text-[11px] text-cyan-300 font-mono">

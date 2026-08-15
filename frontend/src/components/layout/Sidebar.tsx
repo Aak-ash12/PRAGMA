@@ -52,12 +52,13 @@ export default function Sidebar() {
       if (path === '/agents') return { text: '10k Swarm', color: 'bg-purple-500/20 text-purple-300 border-purple-500/30' };
       if (path === '/xai') return { text: 'SHAP XAI', color: 'bg-purple-500/20 text-purple-300 border-purple-500/30' };
       if (path === '/datasets') return { text: 'IoT Data', color: 'bg-purple-500/20 text-purple-300 border-purple-500/30' };
-    } else {
+    } else if (r.includes('government') || r.includes('officer') || r.includes('admin')) {
       // Govt Officer
       if (path === '/dashboard') return { text: 'HQ', color: 'bg-primary/20 text-cyan-300 border-primary/30' };
       if (path === '/policies') return { text: 'Directive', color: 'bg-primary/20 text-cyan-300 border-primary/30' };
       if (path === '/reports') return { text: 'PDF Sign-off', color: 'bg-primary/20 text-cyan-300 border-primary/30' };
     }
+    // Normal / Citizen users: No officer badges in sidebar
     return null;
   };
 

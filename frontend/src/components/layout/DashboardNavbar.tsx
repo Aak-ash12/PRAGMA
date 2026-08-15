@@ -359,9 +359,11 @@ export default function DashboardNavbar() {
           <div className="text-right hidden sm:block">
             <div className="text-xs font-medium text-white max-w-[160px] truncate">{userName || savedEmail}</div>
             <div className="flex items-center justify-end gap-1.5 mt-0.5">
-              <span className="text-[9px] font-mono font-bold bg-primary/20 text-cyan-300 px-1.5 py-0.5 rounded border border-primary/30 uppercase">
-                {userClearance}
-              </span>
+              {userClearance && userClearance.toLowerCase().includes('level') && (
+                <span className="text-[9px] font-mono font-bold bg-primary/20 text-cyan-300 px-1.5 py-0.5 rounded border border-primary/30 uppercase">
+                  {userClearance}
+                </span>
+              )}
               <span className="text-[10px] text-primary uppercase font-mono truncate max-w-[120px]">{userRole}</span>
             </div>
           </div>

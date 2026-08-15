@@ -226,61 +226,33 @@ export default function LoginPage() {
       console.warn('Storage check:', err);
     }
 
-    // 3. Smart dynamic role-detection for any normal or custom email
-    let detectedRole = 'Government Officer';
-    let detectedClearance = 'Level 5 - Autonomous Override';
-    let detectedDept = 'Smart City Governance & Digital Infrastructure Directorate';
-    let detectedAvatar = 'Daemon';
-
-    if (cleanInput.includes('crisis') || cleanInput.includes('disaster') || cleanInput.includes('emergency') || cleanInput.includes('fire')) {
-      detectedRole = 'Disaster Mitigation Lead';
-      detectedClearance = 'Level 4 - Crisis Authority';
-      detectedDept = 'State Disaster Management Authority (TNSDMA)';
-      detectedAvatar = 'Alexander';
-    } else if (cleanInput.includes('util') || cleanInput.includes('infra') || cleanInput.includes('water') || cleanInput.includes('power') || cleanInput.includes('grid')) {
-      detectedRole = 'Public Infrastructure Officer';
-      detectedClearance = 'Level 3 - Infrastructure Access';
-      detectedDept = 'Water Board & Electricity Grid Operations (CMWSSB & TANGEDCO)';
-      detectedAvatar = 'Felix';
-    } else if (cleanInput.includes('analyst') || cleanInput.includes('data') || cleanInput.includes('ai') || cleanInput.includes('research')) {
-      detectedRole = 'AI Policy Administrator';
-      detectedClearance = 'Level 2 - Analytical Access';
-      detectedDept = 'Smart City AI Research & Digital Twin Modeling Lab';
-      detectedAvatar = 'Aria';
-    }
-
-    // Format human-friendly name from email handle (e.g. caraxesdaemon07 -> Daemon Targaryen, john.doe -> John Doe)
+    // 3. Normal / Citizen user login (clean name, citizen role, no officer level)
     const rawHandle = cleanInput.includes('@') ? cleanInput.split('@')[0] : cleanInput;
-    let firstName = rawHandle.charAt(0).toUpperCase() + rawHandle.slice(1);
-    let lastName = 'Officer';
+    let formattedName = rawHandle
+      .replace(/[0-9]/g, '') // remove numbers
+      .replace(/[._-]/g, ' ') // replace separators with space
+      .trim();
 
-    if (cleanInput.includes('daemon') || cleanInput.includes('caraxes')) {
-      firstName = 'Daemon';
-      lastName = 'Targaryen';
-      detectedAvatar = 'Daemon';
-      detectedRole = 'Government Officer';
-      detectedClearance = 'Level 5 - Autonomous Override';
-    } else if (rawHandle.includes('.')) {
-      const parts = rawHandle.split('.');
-      firstName = parts[0].charAt(0).toUpperCase() + parts[0].slice(1);
-      lastName = parts[1].charAt(0).toUpperCase() + parts[1].slice(1);
-    } else if (rawHandle.includes('_')) {
-      const parts = rawHandle.split('_');
-      firstName = parts[0].charAt(0).toUpperCase() + parts[0].slice(1);
-      lastName = parts[1].charAt(0).toUpperCase() + parts[1].slice(1);
-    }
+    if (!formattedName) formattedName = rawHandle;
+
+    // Capitalize words
+    formattedName = formattedName
+      .split(' ')
+      .filter(Boolean)
+      .map(w => w.charAt(0).toUpperCase() + w.slice(1))
+      .join(' ');
 
     const fallbackUser = {
-      role: detectedRole,
-      clearance: detectedClearance,
-      department: detectedDept,
-      firstName: firstName,
-      lastName: lastName,
-      avatar: detectedAvatar,
-      badgeId: `PRAGMA-AUTH-2026-${Math.floor(Math.random() * 800 + 100)}`,
-      region: 'Chennai Metropolitan Hub & State Command',
-      phone: '+91 94440 12890',
-      bio: 'Authenticated smart city governance administrator.'
+      role: 'Citizen User',
+      clearance: '',
+      department: 'Public Access Portal',
+      firstName: formattedName || 'Citizen',
+      lastName: '',
+      avatar: 'Citizen_' + rawHandle,
+      badgeId: `PRAGMA-CITIZEN-2026-${Math.floor(Math.random() * 800 + 100)}`,
+      region: 'Tamil Nadu Region',
+      phone: '',
+      bio: 'Registered citizen platform user.'
     };
 
     setTimeout(() => {
