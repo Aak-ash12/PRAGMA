@@ -100,36 +100,37 @@ export default function LoginPage() {
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
-  // Pre-seed default accounts into localStorage on mount
+  // Pre-seed default accounts into localStorage on mount and purge legacy cache
   useEffect(() => {
     try {
       const registeredUsers = JSON.parse(localStorage.getItem('pragma_registered_users') || '{}');
-      let updated = false;
 
       SEED_ACCOUNTS.forEach((acc) => {
         const cleanMail = acc.email.toLowerCase();
-        if (!registeredUsers[cleanMail]) {
-          registeredUsers[cleanMail] = {
-            email: cleanMail,
-            password: acc.passwords[0],
-            role: acc.role,
-            firstName: acc.firstName,
-            lastName: acc.lastName,
-            avatar: acc.avatar,
-            department: acc.department,
-            badgeId: acc.badgeId,
-            region: acc.region,
-            phone: acc.phone,
-            clearance: acc.clearance,
-            bio: acc.bio
-          };
-          updated = true;
-        }
+        registeredUsers[cleanMail] = {
+          email: cleanMail,
+          password: acc.passwords[0],
+          role: acc.role,
+          firstName: acc.firstName,
+          lastName: acc.lastName,
+          avatar: acc.avatar,
+          department: acc.department,
+          badgeId: acc.badgeId,
+          region: acc.region,
+          phone: acc.phone,
+          clearance: acc.clearance,
+          bio: acc.bio
+        };
       });
 
-      if (updated) {
-        localStorage.setItem('pragma_registered_users', JSON.stringify(registeredUsers));
+      // Clear any legacy Daemon entry
+      if (localStorage.getItem('pragma_first_name') === 'Daemon' || localStorage.getItem('pragma_last_name') === 'Targaryen') {
+        localStorage.setItem('pragma_first_name', 'Rajeshwar');
+        localStorage.setItem('pragma_last_name', 'Sundaram');
+        localStorage.setItem('pragma_user_avatar', 'Rajeshwar');
       }
+
+      localStorage.setItem('pragma_registered_users', JSON.stringify(registeredUsers));
     } catch (e) {
       console.warn('LocalStorage seed check:', e);
     }

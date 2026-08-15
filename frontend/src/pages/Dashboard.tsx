@@ -52,9 +52,18 @@ export default function Dashboard() {
     const isOfficial = isOfficialGov || isOfficialCrisis || isOfficialUtility || isOfficialAnalyst;
 
     const role = localStorage.getItem('pragma_user_role') || (isOfficial ? 'Government Officer' : 'Citizen User');
-    const avatar = localStorage.getItem('pragma_user_avatar') || (isOfficial ? 'Rajeshwar' : 'Citizen');
-    const first = localStorage.getItem('pragma_first_name');
-    const last = localStorage.getItem('pragma_last_name');
+    let first = localStorage.getItem('pragma_first_name');
+    let last = localStorage.getItem('pragma_last_name');
+
+    // Auto-migrate legacy cached Daemon Targaryen name to Rajeshwar Sundaram
+    if (first === 'Daemon' || last === 'Targaryen' || (isOfficialGov && (!first || first === 'Daemon'))) {
+      first = 'Rajeshwar';
+      last = 'Sundaram';
+      localStorage.setItem('pragma_first_name', 'Rajeshwar');
+      localStorage.setItem('pragma_last_name', 'Sundaram');
+      localStorage.setItem('pragma_user_avatar', 'Rajeshwar');
+    }
+
     const dept = localStorage.getItem('pragma_user_department') || (isOfficial ? 'Smart City Governance Directorate' : 'Public Access Portal');
     const badge = localStorage.getItem('pragma_user_badge_id') || 'PRAGMA-2026';
     
