@@ -1,6 +1,7 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import { User, Bell, Shield, Key, Save, Loader2, RefreshCw, Copy, Check } from 'lucide-react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import Sidebar from '../components/layout/Sidebar';
 import DashboardNavbar from '../components/layout/DashboardNavbar';
 import { useToast } from '../contexts/ToastContext';
@@ -8,8 +9,15 @@ import { useToast } from '../contexts/ToastContext';
 type Tab = 'profile' | 'notifications' | 'security' | 'api' | 'system';
 
 export default function SettingsPage() {
-  const [activeTab, setActiveTab] = useState<Tab>('profile');
+  const location = useLocation();
+  const [activeTab, setActiveTab] = useState<Tab>((location.state as any)?.tab || 'profile');
   const [isSaving, setIsSaving] = useState(false);
+
+  useEffect(() => {
+    if ((location.state as any)?.tab) {
+      setActiveTab((location.state as any).tab);
+    }
+  }, [location.state]);
   const [avatarSeed, setAvatarSeed] = useState('Admin');
   const [copiedKey, setCopiedKey] = useState(false);
   const { addToast } = useToast();

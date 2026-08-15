@@ -142,7 +142,7 @@ export default function DashboardNavbar() {
     <motion.header 
       initial={{ opacity: 0, y: -20 }}
       animate={{ opacity: 1, y: 0 }}
-      className="h-[72px] glass border-b border-white/10 px-8 flex items-center justify-between sticky top-0 z-40 bg-[#081120]/80 backdrop-blur-xl ml-[280px]"
+      className="h-[72px] glass border-b border-white/10 px-8 flex items-center justify-between sticky top-0 z-[100] bg-[#081120]/80 backdrop-blur-xl ml-[280px]"
     >
       <div className="flex-1 max-w-xl" ref={searchRef}>
         <div className="relative group">
@@ -359,13 +359,13 @@ export default function DashboardNavbar() {
                   className="absolute right-0 mt-3 w-48 rounded-xl glass-card bg-[#111827]/95 border border-white/10 shadow-2xl overflow-hidden z-50 py-1"
                 >
                   <button 
-                    onClick={() => { setShowProfile(false); navigate('/settings'); }}
+                    onClick={() => { setShowProfile(false); navigate('/settings', { state: { tab: 'profile' } }); }}
                     className="w-full px-4 py-2 text-left flex items-center gap-2 text-sm text-gray-300 hover:text-white hover:bg-white/10 transition-colors"
                   >
                     <User className="w-4 h-4" /> Profile
                   </button>
                   <button 
-                    onClick={() => { setShowProfile(false); navigate('/settings'); }}
+                    onClick={() => { setShowProfile(false); navigate('/settings', { state: { tab: 'system' } }); }}
                     className="w-full px-4 py-2 text-left flex items-center gap-2 text-sm text-gray-300 hover:text-white hover:bg-white/10 transition-colors"
                   >
                     <Settings className="w-4 h-4" /> Settings
