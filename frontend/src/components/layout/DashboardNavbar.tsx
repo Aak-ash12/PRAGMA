@@ -28,6 +28,7 @@ export default function DashboardNavbar() {
     const isOfficial = isOfficialGov || isOfficialCrisis || isOfficialUtility || isOfficialAnalyst;
 
     const role = localStorage.getItem('pragma_user_role') || (isOfficial ? 'Government Officer' : 'Citizen User');
+    const avatar = localStorage.getItem('pragma_user_avatar') || (isOfficial ? 'Rajeshwar' : 'Citizen');
     let first = localStorage.getItem('pragma_first_name');
     let last = localStorage.getItem('pragma_last_name');
 
