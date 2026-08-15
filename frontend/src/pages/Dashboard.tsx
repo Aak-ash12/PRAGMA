@@ -31,26 +31,38 @@ export default function Dashboard() {
   const { addToast } = useToast();
 
   const [profile, setProfile] = useState({
-    name: 'Daemon Targaryen',
-    email: 'admin@pragma.gov',
-    role: 'Government Officer',
-    avatar: 'Daemon',
-    clearance: 'Level 5 - Autonomous Override',
-    department: 'Smart City Governance & Digital Infrastructure Directorate',
-    badgeId: 'PRAGMA-GOV-TN-2026-088'
+    name: 'Citizen User',
+    email: '',
+    role: 'Citizen User',
+    avatar: 'Citizen',
+    clearance: '',
+    department: 'Public Access Portal',
+    badgeId: 'PRAGMA-CITIZEN-2026'
   });
 
   const loadProfile = () => {
-    const email = localStorage.getItem('pragma_saved_email') || 'admin@pragma.gov';
-    const role = localStorage.getItem('pragma_user_role') || 'Government Officer';
-    const avatar = localStorage.getItem('pragma_user_avatar') || 'Daemon';
+    const email = localStorage.getItem('pragma_saved_email') || '';
+    const emailLower = email.toLowerCase();
+
+    const isOfficialGov = emailLower === 'admin@pragma.gov' || emailLower === 'caraxesdaemon07@gmail.com' || emailLower === 'officer@pragma.gov' || emailLower === 'admin';
+    const isOfficialCrisis = emailLower === 'crisis@pragma.gov' || emailLower === 'crisis' || emailLower === 'disaster@pragma.gov';
+    const isOfficialUtility = emailLower === 'utility@pragma.gov' || emailLower === 'utility' || emailLower === 'infra@pragma.gov';
+    const isOfficialAnalyst = emailLower === 'analyst@pragma.gov' || emailLower === 'analyst' || emailLower === 'research@pragma.gov';
+
+    const isOfficial = isOfficialGov || isOfficialCrisis || isOfficialUtility || isOfficialAnalyst;
+
+    const role = localStorage.getItem('pragma_user_role') || (isOfficial ? 'Government Officer' : 'Citizen User');
+    const avatar = localStorage.getItem('pragma_user_avatar') || (isOfficial ? 'Daemon' : 'Citizen');
     const first = localStorage.getItem('pragma_first_name');
     const last = localStorage.getItem('pragma_last_name');
-    const dept = localStorage.getItem('pragma_user_department') || 'Smart City Governance Directorate';
-    const badge = localStorage.getItem('pragma_user_badge_id') || 'PRAGMA-GOV-2026';
-    const clearance = localStorage.getItem('pragma_user_clearance') || 'Level 5 - Autonomous Override';
+    const dept = localStorage.getItem('pragma_user_department') || (isOfficial ? 'Smart City Governance Directorate' : 'Public Access Portal');
+    const badge = localStorage.getItem('pragma_user_badge_id') || 'PRAGMA-2026';
+    
+    // ONLY assign a clearance level if the user is an official government account!
+    const rawClearance = localStorage.getItem('pragma_user_clearance') || '';
+    const clearance = isOfficial ? (rawClearance || 'Level 5 - Autonomous Override') : '';
 
-    const name = (first || last) ? `${first || ''} ${last || ''}`.trim() : (email.split('@')[0] || 'Officer');
+    const name = (first || last) ? `${first || ''} ${last || ''}`.trim() : (email.split('@')[0] || 'Citizen User');
 
     setProfile({
       name,

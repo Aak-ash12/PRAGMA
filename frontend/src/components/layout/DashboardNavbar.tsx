@@ -11,25 +11,37 @@ export default function DashboardNavbar() {
   const [showProfile, setShowProfile] = useState(false);
   const [isLightMode, setIsLightMode] = useState(false);
   const [savedEmail, setSavedEmail] = useState('admin@pragma.gov');
-  const [userRole, setUserRole] = useState('Government Officer');
-  const [userAvatar, setUserAvatar] = useState('Admin');
+  const [userRole, setUserRole] = useState('Citizen User');
+  const [userAvatar, setUserAvatar] = useState('Citizen');
   const [userName, setUserName] = useState('');
-  const [userClearance, setUserClearance] = useState('Level 5');
+  const [userClearance, setUserClearance] = useState('');
 
   const loadUserProfile = () => {
-    const email = localStorage.getItem('pragma_saved_email');
-    const role = localStorage.getItem('pragma_user_role');
-    const avatar = localStorage.getItem('pragma_user_avatar');
+    const email = localStorage.getItem('pragma_saved_email') || '';
+    const emailLower = email.toLowerCase();
+
+    const isOfficialGov = emailLower === 'admin@pragma.gov' || emailLower === 'caraxesdaemon07@gmail.com' || emailLower === 'officer@pragma.gov' || emailLower === 'admin';
+    const isOfficialCrisis = emailLower === 'crisis@pragma.gov' || emailLower === 'crisis' || emailLower === 'disaster@pragma.gov';
+    const isOfficialUtility = emailLower === 'utility@pragma.gov' || emailLower === 'utility' || emailLower === 'infra@pragma.gov';
+    const isOfficialAnalyst = emailLower === 'analyst@pragma.gov' || emailLower === 'analyst' || emailLower === 'research@pragma.gov';
+
+    const isOfficial = isOfficialGov || isOfficialCrisis || isOfficialUtility || isOfficialAnalyst;
+
+    const role = localStorage.getItem('pragma_user_role') || (isOfficial ? 'Government Officer' : 'Citizen User');
+    const avatar = localStorage.getItem('pragma_user_avatar') || (isOfficial ? 'Daemon' : 'Citizen');
     const first = localStorage.getItem('pragma_first_name');
     const last = localStorage.getItem('pragma_last_name');
-    const cl = localStorage.getItem('pragma_user_clearance');
+    const cl = localStorage.getItem('pragma_user_clearance') || '';
 
-    if (email) setSavedEmail(email);
-    if (role) setUserRole(role);
-    if (avatar) setUserAvatar(avatar);
-    if (cl) setUserClearance(cl.split('-')[0].trim());
+    setSavedEmail(email);
+    setUserRole(role);
+    setUserAvatar(avatar);
+    setUserClearance(isOfficial && cl ? cl.split('-')[0].trim() : '');
+
     if (first || last) {
       setUserName(`${first || ''} ${last || ''}`.trim());
+    } else if (email) {
+      setUserName(email.split('@')[0]);
     }
   };
 

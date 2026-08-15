@@ -165,18 +165,26 @@ export default function LoginPage() {
   };
 
   const executeLoginForUser = (cleanEmail: string, userData: any) => {
+    const emailLower = cleanEmail.toLowerCase();
+    const isOfficialGov = emailLower === 'admin@pragma.gov' || emailLower === 'caraxesdaemon07@gmail.com' || emailLower === 'officer@pragma.gov' || emailLower === 'admin';
+    const isOfficialCrisis = emailLower === 'crisis@pragma.gov' || emailLower === 'crisis' || emailLower === 'disaster@pragma.gov';
+    const isOfficialUtility = emailLower === 'utility@pragma.gov' || emailLower === 'utility' || emailLower === 'infra@pragma.gov';
+    const isOfficialAnalyst = emailLower === 'analyst@pragma.gov' || emailLower === 'analyst' || emailLower === 'research@pragma.gov';
+
+    const isOfficial = isOfficialGov || isOfficialCrisis || isOfficialUtility || isOfficialAnalyst;
+
     localStorage.setItem('pragma_authenticated', 'true');
     localStorage.setItem('pragma_saved_email', cleanEmail);
-    localStorage.setItem('pragma_user_role', userData.role || 'Government Officer');
-    localStorage.setItem('pragma_user_avatar', userData.avatar || 'Daemon');
-    localStorage.setItem('pragma_first_name', userData.firstName || 'Officer');
-    localStorage.setItem('pragma_last_name', userData.lastName || 'Admin');
-    localStorage.setItem('pragma_user_department', userData.department || 'Smart City Governance & Digital Infrastructure Directorate');
-    localStorage.setItem('pragma_user_badge_id', userData.badgeId || `PRAGMA-GOV-2026-${Math.floor(Math.random() * 800 + 100)}`);
-    localStorage.setItem('pragma_user_region', userData.region || 'Chennai Metropolitan Hub & State Command');
-    localStorage.setItem('pragma_user_phone', userData.phone || '+91 94440 12890');
-    localStorage.setItem('pragma_user_clearance', userData.clearance || 'Level 5 - Autonomous Override');
-    localStorage.setItem('pragma_user_bio', userData.bio || 'Smart city governance administrator.');
+    localStorage.setItem('pragma_user_role', isOfficial ? (userData.role || 'Government Officer') : 'Citizen User');
+    localStorage.setItem('pragma_user_avatar', userData.avatar || (isOfficial ? 'Daemon' : 'Citizen_' + (cleanEmail.includes('@') ? cleanEmail.split('@')[0] : cleanEmail)));
+    localStorage.setItem('pragma_first_name', userData.firstName || (cleanEmail.includes('@') ? cleanEmail.split('@')[0] : cleanEmail));
+    localStorage.setItem('pragma_last_name', userData.lastName || ''); // No default "Admin" or "Officer"
+    localStorage.setItem('pragma_user_department', isOfficial ? (userData.department || 'Smart City Governance & Digital Infrastructure Directorate') : 'Public Access Portal');
+    localStorage.setItem('pragma_user_badge_id', isOfficial ? (userData.badgeId || 'PRAGMA-GOV-2026') : `PRAGMA-CITIZEN-2026-${Math.floor(Math.random() * 800 + 100)}`);
+    localStorage.setItem('pragma_user_region', userData.region || 'Tamil Nadu Region');
+    localStorage.setItem('pragma_user_phone', userData.phone || '');
+    localStorage.setItem('pragma_user_clearance', isOfficial ? (userData.clearance || 'Level 5 - Autonomous Override') : ''); // NO level for normal users!
+    localStorage.setItem('pragma_user_bio', userData.bio || (isOfficial ? 'Senior Smart City Administrator.' : 'Registered citizen platform user.'));
     localStorage.setItem('pragma_token', 'auth_' + Date.now());
 
     window.dispatchEvent(new Event('pragma_profile_updated'));
@@ -354,6 +362,7 @@ export default function LoginPage() {
                 </div>
                 <input
                   type="text"
+                  name="pragma_login_email"
                   autoComplete="off"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
@@ -372,7 +381,8 @@ export default function LoginPage() {
                 </div>
                 <input
                   type="password"
-                  autoComplete="off"
+                  name="pragma_login_key"
+                  autoComplete="new-password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   className={`block w-full pl-10 pr-3 py-3 border ${errors.password ? 'border-danger focus:border-danger focus:ring-danger/20' : 'border-white/10 focus:border-primary focus:ring-primary/20'} rounded-xl leading-5 bg-black/30 text-gray-100 placeholder-gray-500 focus:outline-none focus:ring-4 transition-all sm:text-sm`}
