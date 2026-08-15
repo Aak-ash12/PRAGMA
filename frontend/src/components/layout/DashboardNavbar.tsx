@@ -174,9 +174,9 @@ export default function DashboardNavbar() {
                 initial={{ opacity: 0, y: 5, scale: 0.98 }}
                 animate={{ opacity: 1, y: 0, scale: 1 }}
                 exit={{ opacity: 0, y: 5, scale: 0.98 }}
-                className="absolute top-12 left-0 right-0 rounded-2xl glass-card bg-[#0F172A]/95 border border-primary/40 shadow-2xl overflow-hidden z-50 p-2 max-h-80 overflow-y-auto custom-scrollbar"
+                className="absolute top-12 left-0 right-0 rounded-2xl bg-[#0b1329] border border-slate-700/80 shadow-[0_20px_50px_rgba(0,0,0,0.9)] overflow-hidden z-[9999] p-2 max-h-80 overflow-y-auto custom-scrollbar"
               >
-                <div className="text-[10px] uppercase font-bold text-gray-400 px-3 py-1 border-b border-white/10 flex justify-between items-center">
+                <div className="text-[10px] uppercase font-bold text-gray-400 px-3 py-1.5 border-b border-slate-800 flex justify-between items-center bg-[#070d1c]">
                   <span>Results for "{searchQuery}" ({filteredSearchResults.length})</span>
                   <span className="text-primary font-mono">Press Enter or click</span>
                 </div>
@@ -186,7 +186,7 @@ export default function DashboardNavbar() {
                     No matching agents, simulations, or regions found for "{searchQuery}".
                   </div>
                 ) : (
-                  <div className="divide-y divide-white/5 mt-1">
+                  <div className="divide-y divide-slate-800/60 mt-1">
                     {filteredSearchResults.map((res) => (
                       <div
                         key={res.id}
@@ -194,7 +194,7 @@ export default function DashboardNavbar() {
                           e.preventDefault();
                           handleSelectSearchResult(res);
                         }}
-                        className="p-2.5 hover:bg-primary/20 rounded-xl cursor-pointer transition-colors flex items-center justify-between group"
+                        className="p-2.5 hover:bg-slate-800/80 rounded-xl cursor-pointer transition-colors flex items-center justify-between group"
                       >
                         <div>
                           <div className="flex items-center gap-2">
@@ -246,22 +246,22 @@ export default function DashboardNavbar() {
             <AnimatePresence>
               {showNotifications && (
                 <motion.div
-                  initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                  initial={{ opacity: 0, y: 8, scale: 0.96 }}
                   animate={{ opacity: 1, y: 0, scale: 1 }}
-                  exit={{ opacity: 0, y: 10, scale: 0.95 }}
-                  transition={{ duration: 0.2 }}
-                  className="absolute right-0 mt-2 w-80 rounded-xl glass-card bg-[#111827]/95 border border-white/10 shadow-2xl overflow-hidden z-50"
+                  exit={{ opacity: 0, y: 8, scale: 0.96 }}
+                  transition={{ duration: 0.15 }}
+                  className="absolute right-0 mt-3 w-80 rounded-2xl bg-[#0d1527] border border-slate-700/80 shadow-[0_20px_50px_rgba(0,0,0,0.9)] overflow-hidden z-[9999]"
                 >
-                  <div className="px-4 py-3 border-b border-white/10 flex justify-between items-center bg-black/20">
+                  <div className="px-4 py-3 border-b border-slate-800 flex justify-between items-center bg-[#08101e]">
                     <h3 className="text-sm font-semibold text-white">Notifications</h3>
-                    <span className="text-xs bg-primary/20 text-primary px-2 py-0.5 rounded-full">{notifications.length} New</span>
+                    <span className="text-xs bg-primary/20 text-primary px-2 py-0.5 rounded-full font-mono">{notifications.length} New</span>
                   </div>
-                  <div className="max-h-80 overflow-y-auto">
+                  <div className="max-h-80 overflow-y-auto divide-y divide-slate-800/60">
                     {notifications.length === 0 ? (
-                      <div className="px-4 py-8 text-center text-gray-500 text-sm">No new notifications</div>
+                      <div className="px-4 py-8 text-center text-gray-400 text-sm">No new notifications</div>
                     ) : (
                       notifications.map(n => (
-                        <div key={n.id} className="px-4 py-3 border-b border-white/5 hover:bg-white/5 cursor-pointer transition-colors">
+                        <div key={n.id} className="px-4 py-3 hover:bg-slate-800/50 cursor-pointer transition-colors">
                           <p className="text-sm text-gray-200 font-medium">{n.title}</p>
                           <p className="text-xs text-gray-400 mt-1">{n.desc}</p>
                           <p className="text-[10px] text-primary mt-2">{n.time}</p>
@@ -269,7 +269,7 @@ export default function DashboardNavbar() {
                       ))
                     )}
                   </div>
-                  <div onClick={markAllAsRead} className="px-4 py-2 text-center border-t border-white/10 bg-black/20 hover:bg-white/5 cursor-pointer transition-colors">
+                  <div onClick={markAllAsRead} className="px-4 py-2.5 text-center border-t border-slate-800 bg-[#08101e] hover:bg-slate-800/70 cursor-pointer transition-colors">
                     <span className="text-xs text-primary font-medium">Mark all as read</span>
                   </div>
                 </motion.div>
@@ -290,19 +290,19 @@ export default function DashboardNavbar() {
             <AnimatePresence>
               {showMessages && (
                 <motion.div
-                  initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                  initial={{ opacity: 0, y: 8, scale: 0.96 }}
                   animate={{ opacity: 1, y: 0, scale: 1 }}
-                  exit={{ opacity: 0, y: 10, scale: 0.95 }}
-                  transition={{ duration: 0.2 }}
-                  className="absolute right-0 mt-2 w-80 rounded-xl glass-card bg-[#111827]/95 border border-white/10 shadow-2xl overflow-hidden z-50"
+                  exit={{ opacity: 0, y: 8, scale: 0.96 }}
+                  transition={{ duration: 0.15 }}
+                  className="absolute right-0 mt-3 w-80 rounded-2xl bg-[#0d1527] border border-slate-700/80 shadow-[0_20px_50px_rgba(0,0,0,0.9)] overflow-hidden z-[9999]"
                 >
-                  <div className="px-4 py-3 border-b border-white/10 flex justify-between items-center bg-black/20">
+                  <div className="px-4 py-3 border-b border-slate-800 flex justify-between items-center bg-[#08101e]">
                     <h3 className="text-sm font-semibold text-white">Messages</h3>
-                    <span className="text-xs bg-secondary/20 text-secondary px-2 py-0.5 rounded-full">{messages.length} New</span>
+                    <span className="text-xs bg-secondary/20 text-secondary px-2 py-0.5 rounded-full font-mono">{messages.length} New</span>
                   </div>
-                  <div className="max-h-80 overflow-y-auto">
+                  <div className="max-h-80 overflow-y-auto divide-y divide-slate-800/60">
                     {messages.map(m => (
-                      <div key={m.id} className="px-4 py-3 border-b border-white/5 hover:bg-white/5 cursor-pointer transition-colors">
+                      <div key={m.id} className="px-4 py-3 hover:bg-slate-800/50 cursor-pointer transition-colors">
                         <p className="text-sm text-gray-200 font-medium">{m.sender}</p>
                         <p className="text-xs text-gray-400 mt-1">{m.preview}</p>
                         <p className="text-[10px] text-secondary mt-2">{m.time}</p>
@@ -314,7 +314,7 @@ export default function DashboardNavbar() {
                       setShowMessages(false);
                       addToast('Syncing secure inbox...', 'info');
                     }}
-                    className="px-4 py-2 text-center border-t border-white/10 bg-black/20 hover:bg-white/5 cursor-pointer transition-colors"
+                    className="px-4 py-2.5 text-center border-t border-slate-800 bg-[#08101e] hover:bg-slate-800/70 cursor-pointer transition-colors"
                   >
                     <span className="text-xs text-secondary font-medium">View Inbox</span>
                   </div>
@@ -352,30 +352,34 @@ export default function DashboardNavbar() {
             <AnimatePresence>
               {showProfile && (
                 <motion.div
-                  initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                  initial={{ opacity: 0, y: 8, scale: 0.96 }}
                   animate={{ opacity: 1, y: 0, scale: 1 }}
-                  exit={{ opacity: 0, y: 10, scale: 0.95 }}
-                  transition={{ duration: 0.2 }}
-                  className="absolute right-0 mt-3 w-48 rounded-xl glass-card bg-[#111827]/95 border border-white/10 shadow-2xl overflow-hidden z-50 py-1"
+                  exit={{ opacity: 0, y: 8, scale: 0.96 }}
+                  transition={{ duration: 0.15 }}
+                  className="absolute right-0 mt-3 w-56 rounded-2xl bg-[#0d1527] border border-slate-700/80 shadow-[0_20px_50px_rgba(0,0,0,0.9)] overflow-hidden z-[9999] py-2"
                 >
+                  <div className="px-4 py-2.5 border-b border-slate-800 bg-[#08101e] mb-1">
+                    <div className="text-xs font-semibold text-white truncate">{savedEmail}</div>
+                    <div className="text-[10px] text-primary uppercase font-mono tracking-wide mt-0.5">{userRole}</div>
+                  </div>
                   <button 
                     onClick={() => { setShowProfile(false); navigate('/settings', { state: { tab: 'profile' } }); }}
-                    className="w-full px-4 py-2 text-left flex items-center gap-2 text-sm text-gray-300 hover:text-white hover:bg-white/10 transition-colors"
+                    className="w-full px-4 py-2.5 text-left flex items-center gap-3 text-sm text-gray-300 hover:text-white hover:bg-slate-800/70 transition-colors"
                   >
-                    <User className="w-4 h-4" /> Profile
+                    <User className="w-4 h-4 text-primary" /> Profile
                   </button>
                   <button 
                     onClick={() => { setShowProfile(false); navigate('/settings', { state: { tab: 'system' } }); }}
-                    className="w-full px-4 py-2 text-left flex items-center gap-2 text-sm text-gray-300 hover:text-white hover:bg-white/10 transition-colors"
+                    className="w-full px-4 py-2.5 text-left flex items-center gap-3 text-sm text-gray-300 hover:text-white hover:bg-slate-800/70 transition-colors"
                   >
-                    <Settings className="w-4 h-4" /> Settings
+                    <Settings className="w-4 h-4 text-cyan-400" /> Settings
                   </button>
-                  <div className="h-px bg-white/10 my-1"></div>
+                  <div className="h-px bg-slate-800 my-1.5"></div>
                   <button 
                     onClick={handleLogout}
-                    className="w-full px-4 py-2 text-left flex items-center gap-2 text-sm text-danger hover:bg-danger/10 transition-colors"
+                    className="w-full px-4 py-2.5 text-left flex items-center gap-3 text-sm text-red-400 hover:text-red-300 hover:bg-red-500/10 transition-colors font-medium"
                   >
-                    <LogOut className="w-4 h-4" /> Logout
+                    <LogOut className="w-4 h-4 text-red-400" /> Logout
                   </button>
                 </motion.div>
               )}
