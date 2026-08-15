@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { 
@@ -21,6 +22,44 @@ const navItems = [
 
 export default function Sidebar() {
   const location = useLocation();
+  const [userRole, setUserRole] = useState('Government Officer');
+
+  useEffect(() => {
+    const role = localStorage.getItem('pragma_user_role') || 'Government Officer';
+    setUserRole(role);
+    const updateRole = () => {
+      setUserRole(localStorage.getItem('pragma_user_role') || 'Government Officer');
+    };
+    window.addEventListener('pragma_profile_updated', updateRole);
+    window.addEventListener('storage', updateRole);
+    return () => {
+      window.removeEventListener('pragma_profile_updated', updateRole);
+      window.removeEventListener('storage', updateRole);
+    };
+  }, []);
+
+  const getItemBadge = (path: string) => {
+    const r = userRole.toLowerCase();
+    if (r.includes('disaster') || r.includes('crisis')) {
+      if (path === '/simulation') return { text: 'Crisis Run', color: 'bg-rose-500/20 text-rose-300 border-rose-500/30' };
+      if (path === '/prediction') return { text: 'Risk Forecaster', color: 'bg-rose-500/20 text-rose-300 border-rose-500/30' };
+      if (path === '/resources') return { text: 'Emergency', color: 'bg-rose-500/20 text-rose-300 border-rose-500/30' };
+    } else if (r.includes('infrastructure') || r.includes('utility')) {
+      if (path === '/prediction') return { text: '18.1GW/420MLD', color: 'bg-amber-500/20 text-amber-300 border-amber-500/30' };
+      if (path === '/resources') return { text: 'Grid Dispatch', color: 'bg-amber-500/20 text-amber-300 border-amber-500/30' };
+      if (path === '/analytics') return { text: 'Sensors', color: 'bg-amber-500/20 text-amber-300 border-amber-500/30' };
+    } else if (r.includes('analyst') || r.includes('scientist') || r.includes('policy')) {
+      if (path === '/agents') return { text: '10k Swarm', color: 'bg-purple-500/20 text-purple-300 border-purple-500/30' };
+      if (path === '/xai') return { text: 'SHAP XAI', color: 'bg-purple-500/20 text-purple-300 border-purple-500/30' };
+      if (path === '/datasets') return { text: 'IoT Data', color: 'bg-purple-500/20 text-purple-300 border-purple-500/30' };
+    } else {
+      // Govt Officer
+      if (path === '/dashboard') return { text: 'HQ', color: 'bg-primary/20 text-cyan-300 border-primary/30' };
+      if (path === '/policies') return { text: 'Directive', color: 'bg-primary/20 text-cyan-300 border-primary/30' };
+      if (path === '/reports') return { text: 'PDF Sign-off', color: 'bg-primary/20 text-cyan-300 border-primary/30' };
+    }
+    return null;
+  };
 
   return (
     <motion.aside 
@@ -41,6 +80,7 @@ export default function Sidebar() {
       <div className="flex-1 overflow-y-auto py-6 px-4 space-y-1 custom-scrollbar">
         {navItems.map((item) => {
           const isActive = location.pathname === item.path;
+          const badge = getItemBadge(item.path);
           return (
             <Link 
               key={item.name} 
@@ -57,7 +97,14 @@ export default function Sidebar() {
                 />
               )}
               <item.icon className={`w-5 h-5 relative z-10 ${isActive ? 'text-primary' : 'group-hover:text-primary transition-colors'}`} />
-              <span className="text-sm font-medium relative z-10">{item.name}</span>
+              <div className="flex-1 flex items-center justify-between relative z-10 gap-2">
+                <span className="text-sm font-medium">{item.name}</span>
+                {badge && (
+                  <span className={`text-[9px] font-mono font-bold px-1.5 py-0.5 rounded-full border uppercase ${badge.color}`}>
+                    {badge.text}
+                  </span>
+                )}
+              </div>
             </Link>
           );
         })}

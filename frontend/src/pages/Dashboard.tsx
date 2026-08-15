@@ -1,7 +1,10 @@
 import { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, ShieldAlert, ShieldCheck, Cpu, Activity, AlertTriangle, Layers } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import { 
+  X, ShieldAlert, ShieldCheck, Cpu, Activity, AlertTriangle, 
+  Layers, Zap, ArrowRight, User, Sparkles, Building2, Radio
+} from 'lucide-react';
+import { useNavigate, Link } from 'react-router-dom';
 import Sidebar from '../components/layout/Sidebar';
 import DashboardNavbar from '../components/layout/DashboardNavbar';
 import DashboardFooter from '../components/layout/DashboardFooter';
@@ -27,6 +30,39 @@ export default function Dashboard() {
   const [activeModal, setActiveModal] = useState<string | null>(null);
   const { addToast } = useToast();
 
+  const [profile, setProfile] = useState({
+    name: 'Daemon Targaryen',
+    email: 'admin@pragma.gov',
+    role: 'Government Officer',
+    avatar: 'Daemon',
+    clearance: 'Level 5 - Autonomous Override',
+    department: 'Smart City Governance & Digital Infrastructure Directorate',
+    badgeId: 'PRAGMA-GOV-TN-2026-088'
+  });
+
+  const loadProfile = () => {
+    const email = localStorage.getItem('pragma_saved_email') || 'admin@pragma.gov';
+    const role = localStorage.getItem('pragma_user_role') || 'Government Officer';
+    const avatar = localStorage.getItem('pragma_user_avatar') || 'Daemon';
+    const first = localStorage.getItem('pragma_first_name');
+    const last = localStorage.getItem('pragma_last_name');
+    const dept = localStorage.getItem('pragma_user_department') || 'Smart City Governance Directorate';
+    const badge = localStorage.getItem('pragma_user_badge_id') || 'PRAGMA-GOV-2026';
+    const clearance = localStorage.getItem('pragma_user_clearance') || 'Level 5 - Autonomous Override';
+
+    const name = (first || last) ? `${first || ''} ${last || ''}`.trim() : (email.split('@')[0] || 'Officer');
+
+    setProfile({
+      name,
+      email,
+      role,
+      avatar,
+      clearance,
+      department: dept,
+      badgeId: badge
+    });
+  };
+
   // Auth guard — redirect to login if not authenticated
   useEffect(() => {
     const isAuthenticated = localStorage.getItem('pragma_authenticated');
@@ -34,6 +70,16 @@ export default function Dashboard() {
       navigate('/login', { replace: true });
     }
   }, [navigate]);
+
+  useEffect(() => {
+    loadProfile();
+    window.addEventListener('pragma_profile_updated', loadProfile);
+    window.addEventListener('storage', loadProfile);
+    return () => {
+      window.removeEventListener('pragma_profile_updated', loadProfile);
+      window.removeEventListener('storage', loadProfile);
+    };
+  }, []);
 
   useEffect(() => {
     api.get('/dashboard/stats')
@@ -60,6 +106,76 @@ export default function Dashboard() {
   const resourcesDeployed = stats?.resources_deployed ?? 1420;
   const aiConfidence = stats?.ai_confidence ?? 98.5;
 
+  const getRoleTheme = () => {
+    const roleLower = profile.role.toLowerCase();
+    if (roleLower.includes('disaster') || roleLower.includes('crisis') || profile.email.includes('crisis')) {
+      return {
+        title: 'Emergency Disaster Command & Crisis Operations HQ',
+        badge: 'Crisis Authority',
+        accentColor: 'from-rose-600/25 via-red-950/30 to-[#0d1527] border-rose-500/50 shadow-rose-900/20',
+        badgeColor: 'bg-rose-500/20 text-rose-300 border-rose-500/40',
+        icon: ShieldAlert,
+        iconColor: 'text-rose-400',
+        alertText: 'CRITICAL INUNDATION FOCUS: 145mm monsoon rainfall runoff model & ICU bed triage ready for deployment.',
+        actions: [
+          { label: 'Run Flood Simulation', path: '/simulation', icon: Activity, primary: true },
+          { label: 'Disaster Risk Forecaster', path: '/prediction', icon: AlertTriangle, primary: false },
+          { label: 'Dispatch ICU & Relief', path: '/resources', icon: ShieldCheck, primary: false }
+        ]
+      };
+    }
+    if (roleLower.includes('infrastructure') || roleLower.includes('utility') || profile.email.includes('utility')) {
+      return {
+        title: 'City Utilities & Transit Infrastructure Command',
+        badge: 'Infrastructure Lead',
+        accentColor: 'from-amber-600/25 via-amber-950/30 to-[#0d1527] border-amber-500/50 shadow-amber-900/20',
+        badgeColor: 'bg-amber-500/20 text-amber-300 border-amber-500/40',
+        icon: Zap,
+        iconColor: 'text-amber-400',
+        alertText: 'GRID TELEMETRY FOCUS: 18.1 GW peak cooling load & 420 MLD Coimbatore/Chennai water allocation online.',
+        actions: [
+          { label: 'Grid Peak Load Monitor', path: '/prediction', icon: Zap, primary: true },
+          { label: 'Resource Optimizer', path: '/resources', icon: Layers, primary: false },
+          { label: 'Live Sensor Analytics', path: '/analytics', icon: Activity, primary: false }
+        ]
+      };
+    }
+    if (roleLower.includes('policy') || roleLower.includes('analyst') || roleLower.includes('scientist') || profile.email.includes('analyst')) {
+      return {
+        title: 'Digital Twin Neural Swarm & XAI Research Lab',
+        badge: 'AI Research Lead',
+        accentColor: 'from-purple-600/25 via-indigo-950/30 to-[#0d1527] border-purple-500/50 shadow-purple-900/20',
+        badgeColor: 'bg-purple-500/20 text-purple-300 border-purple-500/40',
+        icon: Cpu,
+        iconColor: 'text-purple-400',
+        alertText: 'AI AUDIT FOCUS: 10,000+ Mesa citizen agents & SHAP decision importance vectors active for evaluation.',
+        actions: [
+          { label: 'Inspect Mesa Swarms', path: '/agents', icon: Cpu, primary: true },
+          { label: 'SHAP Decision Weights', path: '/xai', icon: Layers, primary: false },
+          { label: 'Validate Telemetry Data', path: '/datasets', icon: Activity, primary: false }
+        ]
+      };
+    }
+    // Default / Government Officer
+    return {
+      title: 'State Urban Governance & Executive Command HQ',
+      badge: 'Executive Admin',
+      accentColor: 'from-primary/25 via-blue-950/30 to-[#0d1527] border-primary/50 shadow-primary/20',
+      badgeColor: 'bg-primary/20 text-cyan-300 border-primary/40',
+      icon: ShieldCheck,
+      iconColor: 'text-primary',
+      alertText: 'GOVERNANCE FOCUS: 95.0% City SLA uptime active. ₹15,000 Cr municipal development budget under AI review.',
+      actions: [
+        { label: 'Review AI Policies', path: '/policies', icon: ShieldCheck, primary: true },
+        { label: 'Generate PDF Report', path: '/reports', icon: Layers, primary: false },
+        { label: 'Resource Redistribution', path: '/resources', icon: Activity, primary: false }
+      ]
+    };
+  };
+
+  const roleTheme = getRoleTheme();
+  const RoleIcon = roleTheme.icon;
+
   return (
     <div className="min-h-screen bg-background flex text-gray-100 font-inter">
       <Sidebar />
@@ -68,6 +184,77 @@ export default function Dashboard() {
         <DashboardNavbar />
         
         <main className="flex-1 ml-[280px] p-6 lg:p-8 space-y-6">
+          
+          {/* ROLE-TAILORED COMMAND HERO BANNER */}
+          <motion.section 
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            className={`rounded-3xl bg-gradient-to-r ${roleTheme.accentColor} border-2 p-6 shadow-xl relative overflow-hidden`}
+          >
+            <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6 relative z-10">
+              
+              {/* Left: Officer & Role Identity */}
+              <div className="flex items-center gap-4">
+                <div className="relative">
+                  <div className="w-16 h-16 rounded-2xl bg-gradient-to-tr from-primary to-cyan-400 p-0.5 shadow-lg">
+                    <div className="w-full h-full bg-[#081120] rounded-[14px] overflow-hidden flex items-center justify-center">
+                      <img 
+                        src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${profile.avatar}&backgroundColor=081120`} 
+                        alt="Avatar" 
+                        className="w-full h-full object-cover" 
+                      />
+                    </div>
+                  </div>
+                  <span className="absolute -bottom-1 -right-1 p-1 bg-black/60 rounded-full border border-white/20">
+                    <RoleIcon className={`w-3.5 h-3.5 ${roleTheme.iconColor}`} />
+                  </span>
+                </div>
+
+                <div className="space-y-1">
+                  <div className="flex flex-wrap items-center gap-2">
+                    <h2 className="text-xl font-bold text-white font-poppins">
+                      {profile.name}
+                    </h2>
+                    <span className={`text-[10px] font-mono font-bold px-2.5 py-0.5 rounded-full border uppercase ${roleTheme.badgeColor}`}>
+                      {profile.clearance.split('-')[0].trim()}
+                    </span>
+                  </div>
+
+                  <div className="text-xs text-gray-300 font-medium">
+                    <span className="text-white font-semibold">{profile.role}</span> • {profile.department}
+                  </div>
+
+                  <p className="text-[11px] text-cyan-300 font-mono">
+                    {roleTheme.alertText}
+                  </p>
+                </div>
+              </div>
+
+              {/* Right: Quick Action Buttons specific to Role */}
+              <div className="flex flex-wrap items-center gap-2.5 w-full lg:w-auto">
+                {roleTheme.actions.map((act) => {
+                  const ActIcon = act.icon;
+                  return (
+                    <button
+                      key={act.label}
+                      onClick={() => navigate(act.path)}
+                      className={`px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 active:scale-95 ${
+                        act.primary 
+                          ? 'bg-primary hover:bg-primaryHover text-white shadow-lg shadow-primary/30' 
+                          : 'bg-black/40 hover:bg-white/10 text-gray-200 border border-white/10 hover:text-white'
+                      }`}
+                    >
+                      <ActIcon className="w-3.5 h-3.5" />
+                      {act.label}
+                      <ArrowRight className="w-3 h-3 opacity-70" />
+                    </button>
+                  );
+                })}
+              </div>
+
+            </div>
+          </motion.section>
+
           {/* TOP KPI CARDS */}
           <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4">
             <KPICard

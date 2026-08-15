@@ -14,6 +14,7 @@ export default function DashboardNavbar() {
   const [userRole, setUserRole] = useState('Government Officer');
   const [userAvatar, setUserAvatar] = useState('Admin');
   const [userName, setUserName] = useState('');
+  const [userClearance, setUserClearance] = useState('Level 5');
 
   const loadUserProfile = () => {
     const email = localStorage.getItem('pragma_saved_email');
@@ -21,10 +22,12 @@ export default function DashboardNavbar() {
     const avatar = localStorage.getItem('pragma_user_avatar');
     const first = localStorage.getItem('pragma_first_name');
     const last = localStorage.getItem('pragma_last_name');
+    const cl = localStorage.getItem('pragma_user_clearance');
 
     if (email) setSavedEmail(email);
     if (role) setUserRole(role);
     if (avatar) setUserAvatar(avatar);
+    if (cl) setUserClearance(cl.split('-')[0].trim());
     if (first || last) {
       setUserName(`${first || ''} ${last || ''}`.trim());
     }
@@ -355,7 +358,12 @@ export default function DashboardNavbar() {
         <div className="flex items-center gap-3 pl-4 border-l border-white/10">
           <div className="text-right hidden sm:block">
             <div className="text-xs font-medium text-white max-w-[160px] truncate">{userName || savedEmail}</div>
-            <div className="text-[10px] text-primary uppercase font-mono">{userRole}</div>
+            <div className="flex items-center justify-end gap-1.5 mt-0.5">
+              <span className="text-[9px] font-mono font-bold bg-primary/20 text-cyan-300 px-1.5 py-0.5 rounded border border-primary/30 uppercase">
+                {userClearance}
+              </span>
+              <span className="text-[10px] text-primary uppercase font-mono truncate max-w-[120px]">{userRole}</span>
+            </div>
           </div>
           
           {/* Profile Dropdown */}
