@@ -168,12 +168,12 @@ export default function LoginPage() {
     localStorage.setItem('pragma_authenticated', 'true');
     localStorage.setItem('pragma_saved_email', cleanEmail);
     localStorage.setItem('pragma_user_role', userData.role || 'Government Officer');
-    localStorage.setItem('pragma_user_avatar', userData.avatar || 'Admin');
+    localStorage.setItem('pragma_user_avatar', userData.avatar || 'Daemon');
     localStorage.setItem('pragma_first_name', userData.firstName || 'Officer');
     localStorage.setItem('pragma_last_name', userData.lastName || 'Admin');
-    localStorage.setItem('pragma_user_department', userData.department || 'Smart City Governance Directorate');
-    localStorage.setItem('pragma_user_badge_id', userData.badgeId || 'PRAGMA-GOV-2026');
-    localStorage.setItem('pragma_user_region', userData.region || 'Chennai Metropolitan Hub');
+    localStorage.setItem('pragma_user_department', userData.department || 'Smart City Governance & Digital Infrastructure Directorate');
+    localStorage.setItem('pragma_user_badge_id', userData.badgeId || `PRAGMA-GOV-2026-${Math.floor(Math.random() * 800 + 100)}`);
+    localStorage.setItem('pragma_user_region', userData.region || 'Chennai Metropolitan Hub & State Command');
     localStorage.setItem('pragma_user_phone', userData.phone || '+91 94440 12890');
     localStorage.setItem('pragma_user_clearance', userData.clearance || 'Level 5 - Autonomous Override');
     localStorage.setItem('pragma_user_bio', userData.bio || 'Smart city governance administrator.');
@@ -194,98 +194,98 @@ export default function LoginPage() {
     setErrors({});
 
     const cleanInput = email.trim().toLowerCase();
-    const cleanPass = password.trim();
 
-    // 1. Check registered users in localStorage (including custom registrations and resets)
-    const registeredUsers = JSON.parse(localStorage.getItem('pragma_registered_users') || '{}');
-    const userData = registeredUsers[cleanInput] || Object.values(registeredUsers).find((u: any) => 
-      u.email?.toLowerCase() === cleanInput || u.username?.toLowerCase() === cleanInput
-    );
-
-    // 2. Check built-in seed accounts & aliases (admin, crisis, utility, analyst, officer, caraxesdaemon07@gmail.com)
+    // 1. Check built-in role accounts & aliases (crisis, utility, analyst, admin, caraxesdaemon07@gmail.com, officer, etc.)
     const seedMatch = SEED_ACCOUNTS.find(s => 
       s.aliases.some(alias => alias.toLowerCase() === cleanInput) ||
-      s.email.toLowerCase() === cleanInput
+      s.email.toLowerCase() === cleanInput ||
+      cleanInput.includes(s.id)
     );
 
-    if (userData) {
-      const isValidPass = 
-        userData.password === cleanPass || 
-        cleanPass === 'password123' || 
-        cleanPass === 'admin123' || 
-        cleanPass === 'daemon123' ||
-        (seedMatch && seedMatch.passwords.includes(cleanPass)) ||
-        cleanPass.length >= 4;
-
-      if (isValidPass) {
-        setTimeout(() => {
-          executeLoginForUser((userData as any).email || cleanInput, {
-            ...(seedMatch || {}),
-            ...userData
-          });
-        }, 200);
-        return;
-      }
-    }
-
     if (seedMatch) {
-      const isValidPass = 
-        seedMatch.passwords.includes(cleanPass) || 
-        cleanPass === 'password123' || 
-        cleanPass === 'admin123' ||
-        cleanPass === 'daemon123' ||
-        cleanPass.length >= 4;
-
-      if (isValidPass) {
-        setTimeout(() => {
-          executeLoginForUser(cleanInput.includes('@') ? cleanInput : seedMatch.email, seedMatch);
-        }, 200);
-        return;
-      }
-    }
-
-    // 3. Fallback to backend API if available
-    try {
-      const response = await fetch('/api/v1/auth/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: cleanInput, password: cleanPass })
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        executeLoginForUser(cleanInput, {
-          role: data.role || 'Government Officer',
-          firstName: data.username || 'Officer',
-          avatar: 'Admin'
-        });
-        return;
-      }
-    } catch (err) {
-      // Backend not running
-    }
-
-    // 4. Graceful login provisioning for any valid email
-    if (cleanInput.includes('@') && cleanPass.length >= 4) {
-      const handle = cleanInput.split('@')[0];
-      const fallbackUser = {
-        role: 'Government Officer',
-        firstName: handle.charAt(0).toUpperCase() + handle.slice(1),
-        lastName: 'Officer',
-        avatar: 'Daemon',
-        clearance: 'Level 5 - Autonomous Override',
-        department: 'Smart City Governance Directorate',
-        badgeId: 'PRAGMA-GOV-2026',
-        region: 'Chennai Metropolitan Hub'
-      };
       setTimeout(() => {
-        executeLoginForUser(cleanInput, fallbackUser);
-      }, 200);
+        executeLoginForUser(cleanInput.includes('@') ? cleanInput : seedMatch.email, seedMatch);
+      }, 150);
       return;
     }
 
-    setIsLoading(false);
-    setErrors({ general: 'Incorrect password. Please verify and try again.' });
+    // 2. Check registered users in localStorage
+    try {
+      const registeredUsers = JSON.parse(localStorage.getItem('pragma_registered_users') || '{}');
+      const userData = registeredUsers[cleanInput] || Object.values(registeredUsers).find((u: any) => 
+        u.email?.toLowerCase() === cleanInput || u.username?.toLowerCase() === cleanInput
+      );
+
+      if (userData) {
+        setTimeout(() => {
+          executeLoginForUser((userData as any).email || cleanInput, userData);
+        }, 150);
+        return;
+      }
+    } catch (err) {
+      console.warn('Storage check:', err);
+    }
+
+    // 3. Smart dynamic role-detection for any normal or custom email
+    let detectedRole = 'Government Officer';
+    let detectedClearance = 'Level 5 - Autonomous Override';
+    let detectedDept = 'Smart City Governance & Digital Infrastructure Directorate';
+    let detectedAvatar = 'Daemon';
+
+    if (cleanInput.includes('crisis') || cleanInput.includes('disaster') || cleanInput.includes('emergency') || cleanInput.includes('fire')) {
+      detectedRole = 'Disaster Mitigation Lead';
+      detectedClearance = 'Level 4 - Crisis Authority';
+      detectedDept = 'State Disaster Management Authority (TNSDMA)';
+      detectedAvatar = 'Alexander';
+    } else if (cleanInput.includes('util') || cleanInput.includes('infra') || cleanInput.includes('water') || cleanInput.includes('power') || cleanInput.includes('grid')) {
+      detectedRole = 'Public Infrastructure Officer';
+      detectedClearance = 'Level 3 - Infrastructure Access';
+      detectedDept = 'Water Board & Electricity Grid Operations (CMWSSB & TANGEDCO)';
+      detectedAvatar = 'Felix';
+    } else if (cleanInput.includes('analyst') || cleanInput.includes('data') || cleanInput.includes('ai') || cleanInput.includes('research')) {
+      detectedRole = 'AI Policy Administrator';
+      detectedClearance = 'Level 2 - Analytical Access';
+      detectedDept = 'Smart City AI Research & Digital Twin Modeling Lab';
+      detectedAvatar = 'Aria';
+    }
+
+    // Format human-friendly name from email handle (e.g. caraxesdaemon07 -> Daemon Targaryen, john.doe -> John Doe)
+    const rawHandle = cleanInput.includes('@') ? cleanInput.split('@')[0] : cleanInput;
+    let firstName = rawHandle.charAt(0).toUpperCase() + rawHandle.slice(1);
+    let lastName = 'Officer';
+
+    if (cleanInput.includes('daemon') || cleanInput.includes('caraxes')) {
+      firstName = 'Daemon';
+      lastName = 'Targaryen';
+      detectedAvatar = 'Daemon';
+      detectedRole = 'Government Officer';
+      detectedClearance = 'Level 5 - Autonomous Override';
+    } else if (rawHandle.includes('.')) {
+      const parts = rawHandle.split('.');
+      firstName = parts[0].charAt(0).toUpperCase() + parts[0].slice(1);
+      lastName = parts[1].charAt(0).toUpperCase() + parts[1].slice(1);
+    } else if (rawHandle.includes('_')) {
+      const parts = rawHandle.split('_');
+      firstName = parts[0].charAt(0).toUpperCase() + parts[0].slice(1);
+      lastName = parts[1].charAt(0).toUpperCase() + parts[1].slice(1);
+    }
+
+    const fallbackUser = {
+      role: detectedRole,
+      clearance: detectedClearance,
+      department: detectedDept,
+      firstName: firstName,
+      lastName: lastName,
+      avatar: detectedAvatar,
+      badgeId: `PRAGMA-AUTH-2026-${Math.floor(Math.random() * 800 + 100)}`,
+      region: 'Chennai Metropolitan Hub & State Command',
+      phone: '+91 94440 12890',
+      bio: 'Authenticated smart city governance administrator.'
+    };
+
+    setTimeout(() => {
+      executeLoginForUser(cleanInput, fallbackUser);
+    }, 150);
   };
 
   return (
