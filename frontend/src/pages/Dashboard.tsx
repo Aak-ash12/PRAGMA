@@ -52,7 +52,7 @@ export default function Dashboard() {
     const isOfficial = isOfficialGov || isOfficialCrisis || isOfficialUtility || isOfficialAnalyst;
 
     const role = localStorage.getItem('pragma_user_role') || (isOfficial ? 'Government Officer' : 'Citizen User');
-    const avatar = localStorage.getItem('pragma_user_avatar') || (isOfficial ? 'Daemon' : 'Citizen');
+    const avatar = localStorage.getItem('pragma_user_avatar') || (isOfficial ? 'Rajeshwar' : 'Citizen');
     const first = localStorage.getItem('pragma_first_name');
     const last = localStorage.getItem('pragma_last_name');
     const dept = localStorage.getItem('pragma_user_department') || (isOfficial ? 'Smart City Governance Directorate' : 'Public Access Portal');

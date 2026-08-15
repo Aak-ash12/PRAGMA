@@ -30,9 +30,9 @@ const SEED_ACCOUNTS: SeedAccount[] = [
     email: 'admin@pragma.gov',
     passwords: ['password123', 'admin123', 'officer123', 'admin'],
     role: 'Government Officer',
-    firstName: 'Daemon',
-    lastName: 'Targaryen',
-    avatar: 'Daemon',
+    firstName: 'Rajeshwar',
+    lastName: 'Sundaram',
+    avatar: 'Rajeshwar',
     department: 'Smart City Governance & Digital Infrastructure Directorate',
     badgeId: 'PRAGMA-GOV-TN-2026-088',
     region: 'Chennai Metropolitan Hub & State Command',
@@ -47,9 +47,9 @@ const SEED_ACCOUNTS: SeedAccount[] = [
     email: 'caraxesdaemon07@gmail.com',
     passwords: ['password123', 'admin123', 'officer123', 'daemon123', 'caraxes123', 'admin', 'password'],
     role: 'Government Officer',
-    firstName: 'Daemon',
-    lastName: 'Targaryen',
-    avatar: 'Daemon',
+    firstName: 'Rajeshwar',
+    lastName: 'Sundaram',
+    avatar: 'Rajeshwar',
     department: 'Smart City Governance & Digital Infrastructure Directorate',
     badgeId: 'PRAGMA-GOV-TN-2026-088',
     region: 'Chennai Metropolitan Hub & State Command',
@@ -176,7 +176,7 @@ export default function LoginPage() {
     localStorage.setItem('pragma_authenticated', 'true');
     localStorage.setItem('pragma_saved_email', cleanEmail);
     localStorage.setItem('pragma_user_role', isOfficial ? (userData.role || 'Government Officer') : 'Citizen User');
-    localStorage.setItem('pragma_user_avatar', userData.avatar || (isOfficial ? 'Daemon' : 'Citizen_' + (cleanEmail.includes('@') ? cleanEmail.split('@')[0] : cleanEmail)));
+    localStorage.setItem('pragma_user_avatar', userData.avatar || (isOfficial ? 'Rajeshwar' : 'Citizen_' + (cleanEmail.includes('@') ? cleanEmail.split('@')[0] : cleanEmail)));
     localStorage.setItem('pragma_first_name', userData.firstName || (cleanEmail.includes('@') ? cleanEmail.split('@')[0] : cleanEmail));
     localStorage.setItem('pragma_last_name', userData.lastName || ''); // No default "Admin" or "Officer"
     localStorage.setItem('pragma_user_department', isOfficial ? (userData.department || 'Smart City Governance & Digital Infrastructure Directorate') : 'Public Access Portal');

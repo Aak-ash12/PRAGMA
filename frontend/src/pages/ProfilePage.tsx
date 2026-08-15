@@ -17,9 +17,9 @@ export default function ProfilePage() {
   const [isSaving, setIsSaving] = useState(false);
 
   // Profile Form States
-  const [firstName, setFirstName] = useState('Daemon');
-  const [lastName, setLastName] = useState('Targaryen');
-  const [email, setEmail] = useState('caraxesdaemon07@gmail.com');
+  const [firstName, setFirstName] = useState('Rajeshwar');
+  const [lastName, setLastName] = useState('Sundaram');
+  const [email, setEmail] = useState('admin@pragma.gov');
   const [role, setRole] = useState('Government Officer');
   const [department, setDepartment] = useState('Smart City Governance & Digital Infrastructure Directorate');
   const [badgeId, setBadgeId] = useState('PRAGMA-GOV-TN-2026-088');
@@ -27,7 +27,7 @@ export default function ProfilePage() {
   const [phone, setPhone] = useState('+91 94440 12890');
   const [clearance, setClearance] = useState('Level 5 - Autonomous Override');
   const [bio, setBio] = useState('Senior Governance Officer overseeing multi-agent predictive simulations, urban resource optimization, and automated crisis mitigation protocols across Tamil Nadu smart districts.');
-  const [avatarSeed, setAvatarSeed] = useState('Admin');
+  const [avatarSeed, setAvatarSeed] = useState('Rajeshwar');
 
   // Load existing profile from localStorage on mount
   useEffect(() => {
@@ -47,12 +47,12 @@ export default function ProfilePage() {
     if (savedRole) setRole(savedRole);
     if (savedAvatar) setAvatarSeed(savedAvatar);
     if (savedFirst) setFirstName(savedFirst);
-    if (savedLast) setLastName(savedLast);
+    if (savedLast !== null) setLastName(savedLast);
     if (savedDept) setDepartment(savedDept);
     if (savedBadge) setBadgeId(savedBadge);
     if (savedRegion) setRegion(savedRegion);
     if (savedPhone) setPhone(savedPhone);
-    if (savedClearance) setClearance(savedClearance);
+    if (savedClearance !== null) setClearance(savedClearance);
     if (savedBio) setBio(savedBio);
 
     // If first name not set, try splitting email username
@@ -63,12 +63,12 @@ export default function ProfilePage() {
   }, []);
 
   const avatarPresets = [
-    { label: 'Officer', seed: 'Admin' },
-    { label: 'Director', seed: 'Daemon' },
+    { label: 'Officer', seed: 'Rajeshwar' },
+    { label: 'Director', seed: 'Marcus' },
     { label: 'Strategist', seed: 'Alexander' },
     { label: 'Commander', seed: 'Felix' },
     { label: 'Specialist', seed: 'Aria' },
-    { label: 'Commissioner', seed: 'Marcus' }
+    { label: 'Citizen', seed: 'Citizen' }
   ];
 
   const randomizeAvatar = () => {
