@@ -202,70 +202,100 @@ export default function LoginPage() {
     setErrors({});
 
     const cleanInput = email.trim().toLowerCase();
+    const cleanPass = password.trim();
 
-    // 1. Check built-in role accounts & aliases (crisis, utility, analyst, admin, caraxesdaemon07@gmail.com, officer, etc.)
+    // 1. Check built-in official role accounts & aliases
     const seedMatch = SEED_ACCOUNTS.find(s => 
       s.aliases.some(alias => alias.toLowerCase() === cleanInput) ||
       s.email.toLowerCase() === cleanInput ||
-      cleanInput.includes(s.id)
+      cleanInput === s.id
     );
 
-    if (seedMatch) {
+    // 2. Check registered users in localStorage
+    const registeredUsers = JSON.parse(localStorage.getItem('pragma_registered_users') || '{}');
+    const userData = registeredUsers[cleanInput] || Object.values(registeredUsers).find((u: any) => 
+      u.email?.toLowerCase() === cleanInput || u.username?.toLowerCase() === cleanInput
+    );
+
+    // Case A: User exists in registered users storage
+    if (userData) {
+      const storedPass = userData.password;
+      const isValid = storedPass === cleanPass || (seedMatch && seedMatch.passwords.includes(cleanPass));
+      
+      if (!isValid) {
+        setIsLoading(false);
+        setErrors({ general: 'Incorrect password. Please verify your password and try again.' });
+        return;
+      }
+
       setTimeout(() => {
-        executeLoginForUser(cleanInput.includes('@') ? cleanInput : seedMatch.email, seedMatch);
-      }, 150);
+        executeLoginForUser((userData as any).email || cleanInput, userData);
+      }, 250);
       return;
     }
 
-    // 2. Check registered users in localStorage
-    try {
-      const registeredUsers = JSON.parse(localStorage.getItem('pragma_registered_users') || '{}');
-      const userData = registeredUsers[cleanInput] || Object.values(registeredUsers).find((u: any) => 
-        u.email?.toLowerCase() === cleanInput || u.username?.toLowerCase() === cleanInput
-      );
-
-      if (userData) {
-        setTimeout(() => {
-          executeLoginForUser((userData as any).email || cleanInput, userData);
-        }, 150);
+    // Case B: Official seed account not yet in storage
+    if (seedMatch) {
+      const isValid = seedMatch.passwords.includes(cleanPass);
+      if (!isValid) {
+        setIsLoading(false);
+        setErrors({ general: 'Incorrect password. Please verify your credentials and try again.' });
         return;
       }
-    } catch (err) {
-      console.warn('Storage check:', err);
+
+      setTimeout(() => {
+        executeLoginForUser(cleanInput.includes('@') ? cleanInput : seedMatch.email, seedMatch);
+      }, 250);
+      return;
     }
 
-    // 3. Normal / Citizen user login (clean name, citizen role, no officer level)
-    const rawHandle = cleanInput.includes('@') ? cleanInput.split('@')[0] : cleanInput;
-    let formattedName = rawHandle
-      .replace(/[0-9]/g, '') // remove numbers
-      .replace(/[._-]/g, ' ') // replace separators with space
-      .trim();
+    // Case C: New Citizen User entering the platform for the first time
+    if (cleanInput.includes('@') && cleanPass.length >= 6) {
+      const rawHandle = cleanInput.split('@')[0];
+      let formattedName = rawHandle
+        .replace(/[0-9]/g, '')
+        .replace(/[._-]/g, ' ')
+        .trim();
 
-    if (!formattedName) formattedName = rawHandle;
+      if (!formattedName) formattedName = rawHandle;
 
-    // Capitalize words
-    formattedName = formattedName
-      .split(' ')
-      .filter(Boolean)
-      .map(w => w.charAt(0).toUpperCase() + w.slice(1))
-      .join(' ');
+      formattedName = formattedName
+        .split(' ')
+        .filter(Boolean)
+        .map(w => w.charAt(0).toUpperCase() + w.slice(1))
+        .join(' ');
 
-    const fallbackUser = {
-      role: 'Citizen User',
-      clearance: '',
-      department: 'Public Access Portal',
-      firstName: formattedName || 'Citizen',
-      lastName: '',
-      avatar: 'Citizen_' + rawHandle,
-      badgeId: `PRAGMA-CITIZEN-2026-${Math.floor(Math.random() * 800 + 100)}`,
-      region: 'Tamil Nadu Region',
-      phone: '',
-      bio: 'Registered citizen platform user.'
-    };
+      const newCitizenUser = {
+        email: cleanInput,
+        password: cleanPass, // Securely persist their password for subsequent logins
+        role: 'Citizen User',
+        clearance: '',
+        department: 'Public Access Portal',
+        firstName: formattedName || 'Citizen',
+        lastName: '',
+        avatar: 'Citizen_' + rawHandle,
+        badgeId: `PRAGMA-CITIZEN-2026-${Math.floor(Math.random() * 800 + 100)}`,
+        region: 'Tamil Nadu Region',
+        phone: '',
+        bio: 'Registered citizen platform user.',
+        registeredAt: Date.now()
+      };
 
-    setTimeout(() => {
-      executeLoginForUser(cleanInput, fallbackUser);
-    }, 150);
+      try {
+        registeredUsers[cleanInput] = newCitizenUser;
+        localStorage.setItem('pragma_registered_users', JSON.stringify(registeredUsers));
+      } catch (err) {
+        console.warn('Storage save:', err);
+      }
+
+      setTimeout(() => {
+        executeLoginForUser(cleanInput, newCitizenUser);
+      }, 250);
+      return;
+    }
+
+    setIsLoading(false);
+    setErrors({ general: 'Account not found or password too short (minimum 6 characters). Please verify your details.' });
   };
 
   return (

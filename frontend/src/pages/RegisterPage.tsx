@@ -107,18 +107,32 @@ export default function RegisterPage() {
     // 2️⃣ Client-side registration fallback (for Netlify static deployment)
     try {
       const registeredUsers = JSON.parse(localStorage.getItem('pragma_registered_users') || '{}');
+      const isOfficialGov = cleanEmail.endsWith('@pragma.gov') || cleanEmail === 'caraxesdaemon07@gmail.com';
+      const assignedRole = isOfficialGov ? 'Government Officer' : 'Citizen User';
+      const assignedClearance = isOfficialGov ? 'Level 5 - Autonomous Override' : '';
+
       registeredUsers[cleanEmail] = {
         name: name.trim(),
+        firstName: name.trim(),
         password: password,
-        role: 'Government Officer',
+        role: assignedRole,
+        clearance: assignedClearance,
+        department: isOfficialGov ? 'Smart City Governance Directorate' : 'Public Access Portal',
         registeredAt: Date.now()
       };
       localStorage.setItem('pragma_registered_users', JSON.stringify(registeredUsers));
 
       localStorage.setItem('pragma_authenticated', 'true');
       localStorage.setItem('pragma_saved_email', cleanEmail);
-      localStorage.setItem('pragma_user_role', 'Government Officer');
+      localStorage.setItem('pragma_user_role', assignedRole);
+      localStorage.setItem('pragma_first_name', name.trim());
+      localStorage.setItem('pragma_last_name', '');
+      localStorage.setItem('pragma_user_clearance', assignedClearance);
       localStorage.setItem('pragma_token', 'client_token_' + Date.now());
+
+      window.dispatchEvent(new Event('pragma_profile_updated'));
+      window.dispatchEvent(new Event('storage'));
+
       setIsLoading(false);
       navigate('/dashboard');
     } catch (localErr) {
