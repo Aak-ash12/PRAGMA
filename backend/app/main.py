@@ -39,6 +39,35 @@ try:
 except Exception as e:
     print(f"Database initialization note: {e}")
 
+# Seed default RBAC users on startup
+try:
+    from sqlalchemy.orm import Session
+    from app.models.auth import User
+    from app.auth.security import hash_password
+    with Session(engine) as db_session:
+        seed_users = [
+            ("admin@pragma.gov", "Daemon Targaryen", "Government Officer", "password123"),
+            ("crisis@pragma.gov", "Alexander Vance", "Disaster Mitigation Lead", "password123"),
+            ("utility@pragma.gov", "Felix Sterling", "Public Infrastructure Officer", "password123"),
+            ("analyst@pragma.gov", "Aria Chen", "AI Policy Administrator", "password123"),
+            ("caraxesdaemon07@gmail.com", "Daemon Targaryen", "Government Officer", "password123"),
+            ("officer@pragma.gov", "Admin Officer", "Government Officer", "officer123"),
+            ("analyst", "Research Analyst", "Research Analyst", "analyst123"),
+            ("admin", "System Admin", "Government Officer", "admin123"),
+        ]
+        for email, username, role, pwd in seed_users:
+            existing = db_session.query(User).filter((User.email == email) | (User.username == email)).first()
+            if not existing:
+                db_session.add(User(
+                    email=email,
+                    username=username,
+                    hashed_password=hash_password(pwd),
+                    role=role
+                ))
+        db_session.commit()
+except Exception as seed_err:
+    print(f"User seed note: {seed_err}")
+
 app = FastAPI(title="Multiagent Predictive Risk Analysis and Governance Management Assistant for Smart Cities Using Digital Twin")
 
 @app.middleware("http")
