@@ -40,23 +40,6 @@ const SEED_ACCOUNTS: SeedAccount[] = [
     bio: 'Senior Governance Officer overseeing multi-agent predictive simulations and municipal budget distributions.'
   },
   {
-    id: 'gov-custom',
-    aliases: ['caraxesdaemon07@gmail.com', 'caraxes', 'daemon', 'caraxesdaemon07'],
-    roleLabel: 'Government Officer',
-    clearance: 'Level 5 - Autonomous Override',
-    email: 'caraxesdaemon07@gmail.com',
-    passwords: ['password123', 'admin123', 'officer123', 'daemon123', 'caraxes123', 'admin', 'password'],
-    role: 'Government Officer',
-    firstName: 'Rajeshwar',
-    lastName: 'Sundaram',
-    avatar: 'Rajeshwar',
-    department: 'Smart City Governance & Digital Infrastructure Directorate',
-    badgeId: 'PRAGMA-GOV-TN-2026-088',
-    region: 'Chennai Metropolitan Hub & State Command',
-    phone: '+91 94440 12890',
-    bio: 'Senior Governance Officer overseeing multi-agent predictive simulations and municipal budget distributions.'
-  },
-  {
     id: 'crisis',
     aliases: ['crisis@pragma.gov', 'crisis', 'disaster@pragma.gov', 'disaster'],
     roleLabel: 'Disaster Mitigation Lead',
@@ -166,7 +149,7 @@ export default function LoginPage() {
 
   const executeLoginForUser = (cleanEmail: string, userData: any) => {
     const emailLower = cleanEmail.toLowerCase();
-    const isOfficialGov = emailLower === 'admin@pragma.gov' || emailLower === 'caraxesdaemon07@gmail.com' || emailLower === 'officer@pragma.gov' || emailLower === 'admin';
+    const isOfficialGov = emailLower === 'admin@pragma.gov' || emailLower === 'officer@pragma.gov' || emailLower === 'admin' || emailLower === 'officer';
     const isOfficialCrisis = emailLower === 'crisis@pragma.gov' || emailLower === 'crisis' || emailLower === 'disaster@pragma.gov';
     const isOfficialUtility = emailLower === 'utility@pragma.gov' || emailLower === 'utility' || emailLower === 'infra@pragma.gov';
     const isOfficialAnalyst = emailLower === 'analyst@pragma.gov' || emailLower === 'analyst' || emailLower === 'research@pragma.gov';

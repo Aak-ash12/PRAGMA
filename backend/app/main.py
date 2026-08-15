@@ -50,7 +50,6 @@ try:
             ("crisis@pragma.gov", "Alexander Vance", "Disaster Mitigation Lead", "password123"),
             ("utility@pragma.gov", "Felix Sterling", "Public Infrastructure Officer", "password123"),
             ("analyst@pragma.gov", "Aria Chen", "AI Policy Administrator", "password123"),
-            ("caraxesdaemon07@gmail.com", "Rajeshwar Sundaram", "Government Officer", "password123"),
             ("officer@pragma.gov", "Admin Officer", "Government Officer", "officer123"),
             ("analyst", "Research Analyst", "Research Analyst", "analyst123"),
             ("admin", "System Admin", "Government Officer", "admin123"),

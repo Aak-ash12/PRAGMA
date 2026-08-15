@@ -20,7 +20,7 @@ export default function DashboardNavbar() {
     const email = localStorage.getItem('pragma_saved_email') || '';
     const emailLower = email.toLowerCase();
 
-    const isOfficialGov = emailLower === 'admin@pragma.gov' || emailLower === 'caraxesdaemon07@gmail.com' || emailLower === 'officer@pragma.gov' || emailLower === 'admin';
+    const isOfficialGov = emailLower === 'admin@pragma.gov' || emailLower === 'officer@pragma.gov' || emailLower === 'admin' || emailLower === 'officer';
     const isOfficialCrisis = emailLower === 'crisis@pragma.gov' || emailLower === 'crisis' || emailLower === 'disaster@pragma.gov';
     const isOfficialUtility = emailLower === 'utility@pragma.gov' || emailLower === 'utility' || emailLower === 'infra@pragma.gov';
     const isOfficialAnalyst = emailLower === 'analyst@pragma.gov' || emailLower === 'analyst' || emailLower === 'research@pragma.gov';

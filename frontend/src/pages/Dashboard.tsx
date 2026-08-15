@@ -44,7 +44,7 @@ export default function Dashboard() {
     const email = localStorage.getItem('pragma_saved_email') || '';
     const emailLower = email.toLowerCase();
 
-    const isOfficialGov = emailLower === 'admin@pragma.gov' || emailLower === 'caraxesdaemon07@gmail.com' || emailLower === 'officer@pragma.gov' || emailLower === 'admin';
+    const isOfficialGov = emailLower === 'admin@pragma.gov' || emailLower === 'officer@pragma.gov' || emailLower === 'admin' || emailLower === 'officer';
     const isOfficialCrisis = emailLower === 'crisis@pragma.gov' || emailLower === 'crisis' || emailLower === 'disaster@pragma.gov';
     const isOfficialUtility = emailLower === 'utility@pragma.gov' || emailLower === 'utility' || emailLower === 'infra@pragma.gov';
     const isOfficialAnalyst = emailLower === 'analyst@pragma.gov' || emailLower === 'analyst' || emailLower === 'research@pragma.gov';
@@ -125,7 +125,7 @@ export default function Dashboard() {
     const isCrisisOfficer = emailLower === 'crisis@pragma.gov' || emailLower === 'crisis' || roleLower === 'disaster mitigation lead';
     const isUtilityOfficer = emailLower === 'utility@pragma.gov' || emailLower === 'utility' || roleLower === 'public infrastructure officer';
     const isAnalystOfficer = emailLower === 'analyst@pragma.gov' || emailLower === 'analyst' || roleLower === 'ai policy administrator';
-    const isGovOfficer = emailLower === 'admin@pragma.gov' || emailLower === 'admin' || emailLower === 'caraxesdaemon07@gmail.com' || emailLower === 'officer@pragma.gov' || roleLower === 'government officer';
+    const isGovOfficer = emailLower === 'admin@pragma.gov' || emailLower === 'admin' || emailLower === 'officer@pragma.gov' || emailLower === 'officer' || roleLower === 'government officer';
 
     if (isCrisisOfficer) {
       return {

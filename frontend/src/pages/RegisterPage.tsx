@@ -107,7 +107,7 @@ export default function RegisterPage() {
     // 2️⃣ Client-side registration fallback (for Netlify static deployment)
     try {
       const registeredUsers = JSON.parse(localStorage.getItem('pragma_registered_users') || '{}');
-      const isOfficialGov = cleanEmail.endsWith('@pragma.gov') || cleanEmail === 'caraxesdaemon07@gmail.com';
+      const isOfficialGov = cleanEmail.endsWith('@pragma.gov');
       const assignedRole = isOfficialGov ? 'Government Officer' : 'Citizen User';
       const assignedClearance = isOfficialGov ? 'Level 5 - Autonomous Override' : '';
 
