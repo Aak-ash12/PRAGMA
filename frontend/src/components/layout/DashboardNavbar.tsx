@@ -12,12 +12,32 @@ export default function DashboardNavbar() {
   const [isLightMode, setIsLightMode] = useState(false);
   const [savedEmail, setSavedEmail] = useState('admin@pragma.gov');
   const [userRole, setUserRole] = useState('Government Officer');
+  const [userAvatar, setUserAvatar] = useState('Admin');
+  const [userName, setUserName] = useState('');
 
-  useEffect(() => {
+  const loadUserProfile = () => {
     const email = localStorage.getItem('pragma_saved_email');
     const role = localStorage.getItem('pragma_user_role');
+    const avatar = localStorage.getItem('pragma_user_avatar');
+    const first = localStorage.getItem('pragma_first_name');
+    const last = localStorage.getItem('pragma_last_name');
+
     if (email) setSavedEmail(email);
     if (role) setUserRole(role);
+    if (avatar) setUserAvatar(avatar);
+    if (first || last) {
+      setUserName(`${first || ''} ${last || ''}`.trim());
+    }
+  };
+
+  useEffect(() => {
+    loadUserProfile();
+    window.addEventListener('pragma_profile_updated', loadUserProfile);
+    window.addEventListener('storage', loadUserProfile);
+    return () => {
+      window.removeEventListener('pragma_profile_updated', loadUserProfile);
+      window.removeEventListener('storage', loadUserProfile);
+    };
   }, []);
 
   // Search State
@@ -334,7 +354,7 @@ export default function DashboardNavbar() {
 
         <div className="flex items-center gap-3 pl-4 border-l border-white/10">
           <div className="text-right hidden sm:block">
-            <div className="text-xs font-medium text-white max-w-[160px] truncate">{savedEmail}</div>
+            <div className="text-xs font-medium text-white max-w-[160px] truncate">{userName || savedEmail}</div>
             <div className="text-[10px] text-primary uppercase font-mono">{userRole}</div>
           </div>
           
@@ -345,7 +365,7 @@ export default function DashboardNavbar() {
               className="w-10 h-10 rounded-full bg-gradient-to-tr from-primary to-secondary p-0.5 cursor-pointer hover:scale-105 transition-transform"
             >
               <div className="w-full h-full bg-black rounded-full flex items-center justify-center overflow-hidden">
-                <img src={`https://api.dicebear.com/7.x/avataaars/svg?seed=Admin&backgroundColor=081120`} alt="Avatar" className="w-full h-full object-cover" />
+                <img src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${userAvatar}&backgroundColor=081120`} alt="Avatar" className="w-full h-full object-cover" />
               </div>
             </div>
 
@@ -356,20 +376,21 @@ export default function DashboardNavbar() {
                   animate={{ opacity: 1, y: 0, scale: 1 }}
                   exit={{ opacity: 0, y: 8, scale: 0.96 }}
                   transition={{ duration: 0.15 }}
-                  className="absolute right-0 mt-3 w-56 rounded-2xl bg-[#0d1527] border border-slate-700/80 shadow-[0_20px_50px_rgba(0,0,0,0.9)] overflow-hidden z-[9999] py-2"
+                  className="absolute right-0 mt-3 w-60 rounded-2xl bg-[#0d1527] border border-slate-700/80 shadow-[0_20px_50px_rgba(0,0,0,0.9)] overflow-hidden z-[9999] py-2"
                 >
                   <div className="px-4 py-2.5 border-b border-slate-800 bg-[#08101e] mb-1">
-                    <div className="text-xs font-semibold text-white truncate">{savedEmail}</div>
+                    <div className="text-xs font-semibold text-white truncate">{userName || savedEmail}</div>
+                    <div className="text-[10px] text-cyan-300 font-mono truncate">{savedEmail}</div>
                     <div className="text-[10px] text-primary uppercase font-mono tracking-wide mt-0.5">{userRole}</div>
                   </div>
                   <button 
-                    onClick={() => { setShowProfile(false); navigate('/settings', { state: { tab: 'profile' } }); }}
+                    onClick={() => { setShowProfile(false); navigate('/profile'); }}
                     className="w-full px-4 py-2.5 text-left flex items-center gap-3 text-sm text-gray-300 hover:text-white hover:bg-slate-800/70 transition-colors"
                   >
                     <User className="w-4 h-4 text-primary" /> Profile
                   </button>
                   <button 
-                    onClick={() => { setShowProfile(false); navigate('/settings', { state: { tab: 'system' } }); }}
+                    onClick={() => { setShowProfile(false); navigate('/settings'); }}
                     className="w-full px-4 py-2.5 text-left flex items-center gap-3 text-sm text-gray-300 hover:text-white hover:bg-slate-800/70 transition-colors"
                   >
                     <Settings className="w-4 h-4 text-cyan-400" /> Settings

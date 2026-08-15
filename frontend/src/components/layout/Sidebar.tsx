@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import { 
   LayoutDashboard, Activity, Network, LineChart, 
   PieChart, BarChart3, FileText, Database, 
-  Settings, ShieldAlert, LogOut, Shield
+  Settings, ShieldAlert, LogOut, Shield, User
 } from 'lucide-react';
 
 const navItems = [
@@ -64,15 +64,40 @@ export default function Sidebar() {
       </div>
 
       <div className="p-4 border-t border-white/10 space-y-1">
-        <Link to="/settings" className="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-400 hover:text-white hover:bg-white/5 transition-all">
-          <Settings className="w-5 h-5" />
+        <Link 
+          to="/profile" 
+          className={`flex items-center gap-3 px-4 py-2.5 rounded-xl transition-all ${
+            location.pathname === '/profile' 
+              ? 'bg-primary/20 text-white border border-primary/40 shadow-[0_0_15px_rgba(37,99,235,0.2)]' 
+              : 'text-gray-400 hover:text-white hover:bg-white/5'
+          }`}
+        >
+          <User className={`w-5 h-5 ${location.pathname === '/profile' ? 'text-primary' : ''}`} />
+          <span className="text-sm font-medium">Profile</span>
+        </Link>
+        <Link 
+          to="/settings" 
+          className={`flex items-center gap-3 px-4 py-2.5 rounded-xl transition-all ${
+            location.pathname === '/settings' 
+              ? 'bg-primary/20 text-white border border-primary/40 shadow-[0_0_15px_rgba(37,99,235,0.2)]' 
+              : 'text-gray-400 hover:text-white hover:bg-white/5'
+          }`}
+        >
+          <Settings className={`w-5 h-5 ${location.pathname === '/settings' ? 'text-primary' : ''}`} />
           <span className="text-sm font-medium">Settings</span>
         </Link>
-        <Link to="/admin" className="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-400 hover:text-white hover:bg-white/5 transition-all">
-          <ShieldAlert className="w-5 h-5" />
+        <Link 
+          to="/admin" 
+          className={`flex items-center gap-3 px-4 py-2.5 rounded-xl transition-all ${
+            location.pathname === '/admin' 
+              ? 'bg-primary/20 text-white border border-primary/40 shadow-[0_0_15px_rgba(37,99,235,0.2)]' 
+              : 'text-gray-400 hover:text-white hover:bg-white/5'
+          }`}
+        >
+          <ShieldAlert className={`w-5 h-5 ${location.pathname === '/admin' ? 'text-primary' : ''}`} />
           <span className="text-sm font-medium">Admin</span>
         </Link>
-        <Link to="/" className="flex items-center gap-3 px-4 py-3 rounded-xl text-danger hover:bg-danger/10 transition-all mt-2">
+        <Link to="/login" className="flex items-center gap-3 px-4 py-2 rounded-xl text-danger hover:bg-danger/10 transition-all mt-1">
           <LogOut className="w-5 h-5" />
           <span className="text-sm font-medium">Logout</span>
         </Link>

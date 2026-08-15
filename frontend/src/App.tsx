@@ -17,6 +17,7 @@ import AdminPage from './pages/AdminPage';
 import ResourceAllocationPage from './pages/ResourceAllocationPage';
 import AnalyticsPage from './pages/AnalyticsPage';
 import SettingsPage from './pages/SettingsPage';
+import ProfilePage from './pages/ProfilePage';
 import { ToastProvider } from './contexts/ToastContext';
 
 interface ErrorBoundaryProps {
@@ -102,6 +103,7 @@ function App() {
             <Route path="/resources" element={<ResourceAllocationPage />} />
             <Route path="/analytics" element={<AnalyticsPage />} />
             <Route path="/settings" element={<SettingsPage />} />
+            <Route path="/profile" element={<ProfilePage />} />
           </Routes>
         </BrowserRouter>
       </ToastProvider>
