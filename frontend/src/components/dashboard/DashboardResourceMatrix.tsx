@@ -15,14 +15,386 @@ interface District {
 }
 
 const initialDistricts: District[] = [
-  { id: 1, name: 'Chennai', risk: 'High', icuBeds: 250, water: 45, electricity: 92, emergency: 120, optimization: 88 },
-  { id: 2, name: 'Coimbatore', risk: 'Medium', icuBeds: 120, water: 78, electricity: 85, emergency: 45, optimization: 94 },
-  { id: 3, name: 'Madurai', risk: 'Low', icuBeds: 180, water: 65, electricity: 98, emergency: 30, optimization: 97 },
-  { id: 4, name: 'Salem', risk: 'Medium', icuBeds: 90, water: 55, electricity: 70, emergency: 60, optimization: 82 },
-  { id: 5, name: 'Tiruchirappalli', risk: 'Low', icuBeds: 50, water: 82, electricity: 88, emergency: 40, optimization: 95 },
-  { id: 6, name: 'Tirunelveli', risk: 'Medium', icuBeds: 85, water: 70, electricity: 80, emergency: 35, optimization: 91 },
-  { id: 7, name: 'Vellore', risk: 'High', icuBeds: 140, water: 40, electricity: 89, emergency: 85, optimization: 84 },
-  { id: 8, name: 'Erode', risk: 'Low', icuBeds: 30, water: 88, electricity: 94, emergency: 25, optimization: 98 }
+  {
+    "id": 1,
+    "name": "Chennai",
+    "risk": "High",
+    "icuBeds": 227,
+    "water": 40,
+    "electricity": 85,
+    "emergency": 99,
+    "optimization": 86
+  },
+  {
+    "id": 2,
+    "name": "Coimbatore",
+    "risk": "High",
+    "icuBeds": 234,
+    "water": 45,
+    "electricity": 88,
+    "emergency": 108,
+    "optimization": 82
+  },
+  {
+    "id": 3,
+    "name": "Madurai",
+    "risk": "High",
+    "icuBeds": 241,
+    "water": 50,
+    "electricity": 91,
+    "emergency": 117,
+    "optimization": 86
+  },
+  {
+    "id": 4,
+    "name": "Salem",
+    "risk": "Medium",
+    "icuBeds": 110,
+    "water": 76,
+    "electricity": 83,
+    "emergency": 65,
+    "optimization": 92
+  },
+  {
+    "id": 5,
+    "name": "Tiruchirappalli",
+    "risk": "Low",
+    "icuBeds": 45,
+    "water": 92,
+    "electricity": 92,
+    "emergency": 40,
+    "optimization": 94
+  },
+  {
+    "id": 6,
+    "name": "Ariyalur",
+    "risk": "Low",
+    "icuBeds": 48,
+    "water": 94,
+    "electricity": 94,
+    "emergency": 43,
+    "optimization": 96
+  },
+  {
+    "id": 7,
+    "name": "Chengalpattu",
+    "risk": "High",
+    "icuBeds": 269,
+    "water": 45,
+    "electricity": 88,
+    "emergency": 113,
+    "optimization": 86
+  },
+  {
+    "id": 8,
+    "name": "Cuddalore",
+    "risk": "High",
+    "icuBeds": 276,
+    "water": 50,
+    "electricity": 91,
+    "emergency": 122,
+    "optimization": 82
+  },
+  {
+    "id": 9,
+    "name": "Dharmapuri",
+    "risk": "Medium",
+    "icuBeds": 135,
+    "water": 71,
+    "electricity": 93,
+    "emergency": 60,
+    "optimization": 91
+  },
+  {
+    "id": 10,
+    "name": "Dindigul",
+    "risk": "Medium",
+    "icuBeds": 140,
+    "water": 75,
+    "electricity": 75,
+    "emergency": 65,
+    "optimization": 94
+  },
+  {
+    "id": 11,
+    "name": "Erode",
+    "risk": "Low",
+    "icuBeds": 63,
+    "water": 89,
+    "electricity": 96,
+    "emergency": 38,
+    "optimization": 96
+  },
+  {
+    "id": 12,
+    "name": "Kallakurichi",
+    "risk": "Medium",
+    "icuBeds": 90,
+    "water": 83,
+    "electricity": 79,
+    "emergency": 45,
+    "optimization": 92
+  },
+  {
+    "id": 13,
+    "name": "Kanchipuram",
+    "risk": "Medium",
+    "icuBeds": 95,
+    "water": 62,
+    "electricity": 81,
+    "emergency": 50,
+    "optimization": 95
+  },
+  {
+    "id": 14,
+    "name": "Kanyakumari",
+    "risk": "Medium",
+    "icuBeds": 100,
+    "water": 66,
+    "electricity": 83,
+    "emergency": 55,
+    "optimization": 90
+  },
+  {
+    "id": 15,
+    "name": "Karur",
+    "risk": "Medium",
+    "icuBeds": 105,
+    "water": 70,
+    "electricity": 85,
+    "emergency": 60,
+    "optimization": 93
+  },
+  {
+    "id": 16,
+    "name": "Krishnagiri",
+    "risk": "Medium",
+    "icuBeds": 110,
+    "water": 74,
+    "electricity": 87,
+    "emergency": 65,
+    "optimization": 88
+  },
+  {
+    "id": 17,
+    "name": "Mayiladuthurai",
+    "risk": "Medium",
+    "icuBeds": 115,
+    "water": 78,
+    "electricity": 89,
+    "emergency": 70,
+    "optimization": 91
+  },
+  {
+    "id": 18,
+    "name": "Nagapattinam",
+    "risk": "High",
+    "icuBeds": 346,
+    "water": 50,
+    "electricity": 91,
+    "emergency": 92,
+    "optimization": 82
+  },
+  {
+    "id": 19,
+    "name": "Namakkal",
+    "risk": "Low",
+    "icuBeds": 47,
+    "water": 90,
+    "electricity": 96,
+    "emergency": 42,
+    "optimization": 97
+  },
+  {
+    "id": 20,
+    "name": "Nilgiris",
+    "risk": "High",
+    "icuBeds": 360,
+    "water": 35,
+    "electricity": 82,
+    "emergency": 110,
+    "optimization": 82
+  },
+  {
+    "id": 21,
+    "name": "Perambalur",
+    "risk": "Low",
+    "icuBeds": 53,
+    "water": 94,
+    "electricity": 92,
+    "emergency": 28,
+    "optimization": 96
+  },
+  {
+    "id": 22,
+    "name": "Pudukkottai",
+    "risk": "Low",
+    "icuBeds": 56,
+    "water": 96,
+    "electricity": 94,
+    "emergency": 31,
+    "optimization": 98
+  },
+  {
+    "id": 23,
+    "name": "Ramanathapuram",
+    "risk": "High",
+    "icuBeds": 231,
+    "water": 50,
+    "electricity": 91,
+    "emergency": 97,
+    "optimization": 86
+  },
+  {
+    "id": 24,
+    "name": "Ranipet",
+    "risk": "Medium",
+    "icuBeds": 90,
+    "water": 81,
+    "electricity": 83,
+    "emergency": 45,
+    "optimization": 88
+  },
+  {
+    "id": 25,
+    "name": "Sivaganga",
+    "risk": "Medium",
+    "icuBeds": 95,
+    "water": 60,
+    "electricity": 85,
+    "emergency": 50,
+    "optimization": 91
+  },
+  {
+    "id": 26,
+    "name": "Tenkasi",
+    "risk": "Medium",
+    "icuBeds": 100,
+    "water": 64,
+    "electricity": 87,
+    "emergency": 55,
+    "optimization": 94
+  },
+  {
+    "id": 27,
+    "name": "Thanjavur",
+    "risk": "High",
+    "icuBeds": 259,
+    "water": 45,
+    "electricity": 88,
+    "emergency": 93,
+    "optimization": 86
+  },
+  {
+    "id": 28,
+    "name": "Theni",
+    "risk": "Medium",
+    "icuBeds": 110,
+    "water": 72,
+    "electricity": 91,
+    "emergency": 65,
+    "optimization": 92
+  },
+  {
+    "id": 29,
+    "name": "Thoothukudi",
+    "risk": "Medium",
+    "icuBeds": 115,
+    "water": 76,
+    "electricity": 93,
+    "emergency": 70,
+    "optimization": 95
+  },
+  {
+    "id": 30,
+    "name": "Tirunelveli",
+    "risk": "Low",
+    "icuBeds": 40,
+    "water": 82,
+    "electricity": 94,
+    "emergency": 35,
+    "optimization": 94
+  },
+  {
+    "id": 31,
+    "name": "Tirupathur",
+    "risk": "Low",
+    "icuBeds": 43,
+    "water": 84,
+    "electricity": 96,
+    "emergency": 38,
+    "optimization": 96
+  },
+  {
+    "id": 32,
+    "name": "Tiruppur",
+    "risk": "Medium",
+    "icuBeds": 130,
+    "water": 63,
+    "electricity": 79,
+    "emergency": 55,
+    "optimization": 88
+  },
+  {
+    "id": 33,
+    "name": "Tiruvallur",
+    "risk": "Low",
+    "icuBeds": 49,
+    "water": 88,
+    "electricity": 92,
+    "emergency": 44,
+    "optimization": 95
+  },
+  {
+    "id": 34,
+    "name": "Tiruvannamalai",
+    "risk": "High",
+    "icuBeds": 308,
+    "water": 55,
+    "electricity": 94,
+    "emergency": 116,
+    "optimization": 82
+  },
+  {
+    "id": 35,
+    "name": "Tiruvarur",
+    "risk": "Medium",
+    "icuBeds": 145,
+    "water": 75,
+    "electricity": 85,
+    "emergency": 70,
+    "optimization": 89
+  },
+  {
+    "id": 36,
+    "name": "Vellore",
+    "risk": "High",
+    "icuBeds": 322,
+    "water": 40,
+    "electricity": 85,
+    "emergency": 94,
+    "optimization": 82
+  },
+  {
+    "id": 37,
+    "name": "Viluppuram",
+    "risk": "Low",
+    "icuBeds": 61,
+    "water": 96,
+    "electricity": 92,
+    "emergency": 36,
+    "optimization": 98
+  },
+  {
+    "id": 38,
+    "name": "Virudhunagar",
+    "risk": "High",
+    "icuBeds": 336,
+    "water": 50,
+    "electricity": 91,
+    "emergency": 112,
+    "optimization": 82
+  }
 ];
 
 export default function DashboardResourceMatrix() {
